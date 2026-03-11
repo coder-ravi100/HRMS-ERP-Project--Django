@@ -6,8 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="POST" action="{% url 'login_view' %}">
-    {% csrf_token %}
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
     
         <input type="text" name="username" placeholder="Username">
 
