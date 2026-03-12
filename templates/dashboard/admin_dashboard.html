@@ -40,75 +40,232 @@
 	</div>
 	<!-- [ Pre-loader ] End -->
 
-	<!-- [ navigation menu ] start -->
-	<nav class="pcoded-navbar menupos-fixed menu-light brand-blue ">
-		<div class="navbar-wrapper ">
+	<!-- Navigation Menu Start -->
+	<nav class="pcoded-navbar menupos-fixed menu-light brand-blue">
+
+		<div class="navbar-wrapper">
+
+			<!-- Logo -->
 			<div class="navbar-brand header-logo">
-				<a href="index.html" class="b-brand">
-					<img src="{% static 'assets/images/logo.svg' %}" alt="" class="logo images">
-					<img src="{% static 'assets/images/logo-icon.svg' %}" alt="" class="logo-thumb images">
+
+				<a href="#" class="b-brand">
+
+					<img src="{% static 'assets/images/logo.svg' %}" class="logo images" alt="logo">
+
+					<img src="{% static 'assets/images/logo-icon.svg' %}" class="logo-thumb images" alt="logo">
+
 				</a>
-				<a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+
+				<a class="mobile-menu" id="mobile-collapse" href="#!">
+					<span></span>
+				</a>
+
 			</div>
+
+
 			<div class="navbar-content scroll-div">
+
 				<ul class="nav pcoded-inner-navbar">
+
+
+					<!-- Dashboard -->
 					<li class="nav-item pcoded-menu-caption">
-						<label>Navigation</label>
+						<label>Dashboard</label>
 					</li>
+
 					<li class="nav-item">
-						<a href="index.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+						<a href="#" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-home"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Dashboard
+							</span>
+
+						</a>
 					</li>
+
+
+					<!-- Employee Management -->
 					<li class="nav-item pcoded-menu-caption">
-						<label>UI Element</label>
+						<label>Employee Management</label>
 					</li>
+
 					<li class="nav-item pcoded-hasmenu">
-						<a href="#!" class="nav-link"><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Componant</span></a>
+
+						<a href="#!" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-users"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Employees
+							</span>
+
+						</a>
+
 						<ul class="pcoded-submenu">
-							<li class=""><a href="bc_button.html" class="">Button</a></li>
-							<li class=""><a href="bc_badges.html" class="">Badges</a></li>
-							<li class=""><a href="bc_breadcrumb-pagination.html" class="">Breadcrumb & paggination</a></li>
-							<li class=""><a href="bc_collapse.html" class="">Collapse</a></li>
-							<li class=""><a href="bc_progress.html" class="">Progress</a></li>
-							<li class=""><a href="bc_tabs.html" class="">Tabs & pills</a></li>
-							<li class=""><a href="bc_typography.html" class="">Typography</a></li>
+
+							<li>
+								<a href="{% url 'view-employee' %}">
+									All Employees
+								</a>
+							</li>
+
+							<li>
+								<a href="{% url 'create-employee' %}">
+									Add Employee
+								</a>
+							</li>
+
+							<li>
+								<a href="#">
+									Departments
+								</a>
+							</li>
+
 						</ul>
+
 					</li>
+
+
+					<!-- Attendance -->
 					<li class="nav-item pcoded-menu-caption">
-						<label>Forms &amp; table</label>
+						<label>Attendance</label>
 					</li>
+
 					<li class="nav-item">
-						<a href="form_elements.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-file-text"></i></span><span class="pcoded-mtext">Form elements</span></a>
+
+						<a href="#" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-calendar"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Attendance
+							</span>
+
+						</a>
+
 					</li>
-					<li class="nav-item">
-						<a href="tbl_bootstrap.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-align-justify"></i></span><span class="pcoded-mtext">Bootstrap table</span></a>
-					</li>
+
+
+					<!-- Leave Management -->
 					<li class="nav-item pcoded-menu-caption">
-						<label>Chart & Maps</label>
+						<label>Leave Management</label>
 					</li>
-					<li class="nav-item">
-						<a href="chart-morris.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">Chart</span></a>
-					</li>
-					<li class="nav-item">
-						<a href="map-google.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-map"></i></span><span class="pcoded-mtext">Maps</span></a>
-					</li>
-					<li class="nav-item pcoded-menu-caption">
-						<label>Pages</label>
-					</li>
+
 					<li class="nav-item pcoded-hasmenu">
-						<a href="#!" class="nav-link"><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span class="pcoded-mtext">Authentication</span></a>
+
+						<a href="#!" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-file-text"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Leaves
+							</span>
+
+						</a>
+
 						<ul class="pcoded-submenu">
-							<li class=""><a href="auth-signup.html" class="" target="_blank">Sign up</a></li>
-							<li class=""><a href="auth-signin.html" class="" target="_blank">Sign in</a></li>
+
+							<li>
+								<a href="#">
+									Leave Requests
+								</a>
+							</li>
+
+							<li>
+								<a href="#">
+									Leave Types
+								</a>
+							</li>
+
 						</ul>
+
 					</li>
-					<li class="nav-item"><a href="sample-page.html" class="nav-link"><span class="pcoded-micon"><i class="feather icon-sidebar"></i></span><span class="pcoded-mtext">Sample page</span></a></li>
-					<li class="nav-item disabled"><a href="#!" class="nav-link"><span class="pcoded-micon"><i class="feather icon-power"></i></span><span class="pcoded-mtext">Disabled menu</span></a></li>
+
+
+					<!-- Tasks -->
+					<li class="nav-item pcoded-menu-caption">
+						<label>Tasks</label>
+					</li>
+
+					<li class="nav-item">
+
+						<a href="#" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-check-square"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Tasks
+							</span>
+
+						</a>
+
+					</li>
+
+
+					<!-- Reports -->
+					<li class="nav-item pcoded-menu-caption">
+						<label>Reports</label>
+					</li>
+
+					<li class="nav-item">
+
+						<a href="#" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-bar-chart-2"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Reports
+							</span>
+
+						</a>
+
+					</li>
+
+
+					<!-- Settings -->
+					<li class="nav-item pcoded-menu-caption">
+						<label>System</label>
+					</li>
+
+					<li class="nav-item">
+
+						<a href="#" class="nav-link">
+
+							<span class="pcoded-micon">
+								<i class="feather icon-settings"></i>
+							</span>
+
+							<span class="pcoded-mtext">
+								Settings
+							</span>
+
+						</a>
+
+					</li>
+
+
 				</ul>
-				
+
 			</div>
+
 		</div>
+
 	</nav>
-	<!-- [ navigation menu ] end -->
+	<!-- Navigation Menu End -->
 
 	<!-- [ Header ] start -->
 	<header class="navbar pcoded-header navbar-expand-lg navbar-light headerpos-fixed">
@@ -247,6 +404,7 @@
 	<!-- [ Header ] end -->
 
 	<!-- [ Main Content ] start -->
+	{% block meincontaint %}
 	<div class="pcoded-main-container">
 		<div class="pcoded-wrapper">
 			<div class="pcoded-content">
@@ -734,6 +892,7 @@
 				</div>
 			</div>
 		</div>
+	{% endblock %}
 	<!-- [ Main Content ] end -->
 
 	<!-- Required Js -->

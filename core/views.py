@@ -1,5 +1,9 @@
 from django.shortcuts import render
 
 # Create your views here.
-def home(request):
-    return render(request, 'core/home.html')
+def create_employees(request):
+    return render(request, 'employee/employee_create.html')
+
+
+def view_employees(request):
+    return render(request,'employee/employee_list.html')
