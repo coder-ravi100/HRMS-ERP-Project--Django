@@ -1,0 +1,90 @@
+{% extends 'dashboard/admin_dashboard.html' %}
+{% load static %}
+{% block meincontaint %}
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+
+                <div class="main-body">
+                    <div class="page-wrapper">
+
+                        <!-- Page Header -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Department Lists</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Table -->
+                        <div class="row">
+                            <div class="col-xl-12">
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Department</h5>
+                                    </div>
+
+                                    <div class="card-body table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Department</th>
+                                                        <th>Description</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            
+                                                <tbody>
+                                                    <tr>
+                                                        
+                                                        <td>1</td>
+                                                        <td>IT</td>
+                                                        <td>Handles Company Software,System Services, <br> and technical Supports </td>
+                                                        <td class="text-center">
+
+                                                            <div class="btn-group" role="group">
+                                                            
+                                                            <!-- <a href="#" class="btn btn-info btn-sm">
+                                                            <i class="feather icon-eye"></i>
+                                                            </a> -->
+                                                            
+                                                            <a href="#" class="btn btn-success btn-sm">
+                                                            <i class="feather icon-edit"></i>
+                                                            </a>
+                                                            
+                                                            <a href="#" class="btn btn-danger btn-sm">
+                                                            <i class="feather icon-trash-2"></i>
+                                                            </a>
+                                                            
+                                                            </div>
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
