@@ -1,0 +1,81 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Department</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Department List</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                             <!-- [ stiped-table ] start -->
+                             <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Striped Table</h5>
+                                    </div>
+                                    <div class="card-body table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Department Name</th>
+                                                        <th>Description</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for department in department %}
+                                                    <tr>
+                                                        <td>{{department.id}}</td>
+                                                        <td>{{department.name}}</td>
+                                                        <td>{{department.description}}</td>
+                                                        <td>
+                                                            <a href="{%  url 'edit-department' department.id %}" class="btn btn-sm btn-primary">
+                                                                <i class="bi bi-pencil-square"></i>
+                                                            </a>
+                                                            
+                                                            <a href="{% url 'delete-department' department.id %}" class="btn btn-sm btn-danger">
+                                                                <i class="bi bi-trash"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ stiped-table ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}

@@ -1,0 +1,12 @@
+from django.urls import path
+from .import views
+
+urlpatterns = [
+      path('admin_dashboard/', views.admin_dashboard, name='admin-dashboard'),
+
+
+      path('add_department/', views.add_department, name='add-department'),
+      path('list_department/', views.list_department, name='list_department'),
+      path('edit_department/<int:pk>', views.edit_department, name='edit-department'),
+      path('delete_department/<int:pk>', views.delete_department, name='delete-department')
+]
