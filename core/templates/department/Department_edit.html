@@ -35,7 +35,7 @@
                             
                                     <div class="card-body">
                             
-                                        <form method="POST" action="{% url 'edit-department' department.id %}">
+                                        <form method="POST" action="{% url 'edit-department' d_id.id %}">
                                             {% csrf_token %}
                             
                                             <div class="form-group">
@@ -46,7 +46,7 @@
                                                     class="form-control" 
                                                     placeholder="Enter department name"
                                                     required
-                                                    value="{{department.name}}"
+                                                    value="{{d_id.name}}"
                                                 >
                                             </div>
                             
@@ -57,7 +57,7 @@
                                                     class="form-control" 
                                                     rows="4"
                                                     placeholder="Enter department description"
-                                                >{{department.description}}</textarea>
+                                                >{{d_id.description}}</textarea>
                                             </div>
                             
                                             <input type="submit" class="btn btn-primary" value="Update Department">

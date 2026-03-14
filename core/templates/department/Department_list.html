@@ -46,17 +46,17 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for department in department %}
+                                                    {% for department in d_all %}
                                                     <tr>
                                                         <td>{{department.id}}</td>
                                                         <td>{{department.name}}</td>
                                                         <td>{{department.description}}</td>
                                                         <td>
-                                                            <a href="{%  url 'edit-department' department.id %}" class="btn btn-sm btn-primary">
+                                                            <a href="{%  url 'edit-department' pk=department.id %}" class="btn btn-sm btn-primary">
                                                                 <i class="bi bi-pencil-square"></i>
                                                             </a>
                                                             
-                                                            <a href="{% url 'delete-department' department.id %}" class="btn btn-sm btn-danger">
+                                                            <a href="{% url 'delete-department' pk=department.id %}" class="btn btn-sm btn-danger">
                                                                 <i class="bi bi-trash"></i>
                                                             </a>
                                                         </td>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render
 from .models  import *
 
 # Create your views here.
@@ -8,14 +8,19 @@ def admin_dashboard(request):
 
 
 def add_department(request):
-    if request.method == "POST":
-        name = request.POST.get('name')
-        description = request.POST.get("description")
-
-        Department.objects.create(name=name,description=description)
+    if request.POST:
+        dep_name = request.POST["name"]
+        dep_description = request.POST["description"]
+        d_id = Department.objects.create(
+            name = dep_name,
+            description = dep_description,
+        )
+        if d_id:
+            d_all = Department.objects.all()
+            contaxt = {
+                'd_all' : d_all,
+            }
         
-        deparment = Department.objects.all()
-        contaxt = {'department' : deparment}
         return render(request,'department/Department_list.html',contaxt)
     
     return render(request,'department/Department_add.html')
@@ -23,30 +28,49 @@ def add_department(request):
 
 
 def list_department(request):
-     department = Department.objects.all()
-     
-     contaxt = {'department' : department}
+     d_all = Department.objects.all()
+     contaxt = {
+         'd_all' : d_all
+     }
      return render(request,'department/Department_list.html',contaxt)
 
 
 
 def edit_department(request, pk):
-    department = get_object_or_404(Department, id=pk)
+    if request.POST:
+        d_id = Department.objects.get(id = pk)
+        d_id.name = request.POST['name']
+        d_id.description = request.POST['description']
 
-    if request.method == "POST":
-        department.name = request.POST["name"]
-        department.description = request.POST["description"]
-        department.save()
+        d_id.save()
+        d_all = Department.objects.all()
 
-        return redirect('list_department')
+        contaxt = {
+            'd_all' : d_all
+        }
+        return render(request,'department/Department_list.html',contaxt)
+    else:
+        d_id = Department.objects.get(id = pk)
+        contaxt = {
+            'd_id' : d_id
+        }
+        return render(request,'department/Department_edit.html',contaxt)
 
-    context = {'department': department}
-    return render(request,'department/Department_edit.html',context)
 
 
 def delete_department(request,pk):
-    department = get_object_or_404(Department,id=pk)
-    
-    department.delete()
+   try:
+       d_id = Department.objects.get(id = pk)
+       d_id.delete()
 
-    return redirect('list_Department')
+       d_all = Department.objects.all()
+       contaxt = {
+           'd_all' : d_all
+       }
+       return render(request,'department/Department_list.html',contaxt)
+   except:
+       d_all = Department.objects.all()
+       contaxt = {
+           'd_all' : d_all
+       }
+       return render(request,'department/Department_list.html',contaxt)
