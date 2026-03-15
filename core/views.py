@@ -162,9 +162,51 @@ def list_employee(request):
     }
     return render(request,'employee/Employee_list.html',context)
 
+
+#Show Employee Bussiness Logic code
+def show_employee(request):
+    return render(request,'employee/Employee_show.html')
+
 #Update Employee Bussiness Logic  Code
-def edit_employee(request):
-    return render(request,'employee/Employee_add.html')
+def edit_employee(request,pk):
+    
+    emp_id = EmployeeProfile.objects.get(id=pk)
+    dep_id = Department.objects.all()
+
+    if request.method == "POST":
+        #USER UPDATE
+        emp_id.user.first_name = request.POST['first_name']
+        emp_id.user.last_name = request.POST['last_name']
+        emp_id.user.email = request.POST['email']
+        emp_id.user.phone = request.POST['phone']
+        emp_id.user.address = request.POST['address']
+
+        profile_pic = request.FILES.get('profile_pic')
+        if profile_pic:
+            emp_id.user.profile_pic = profile_pic
+        emp_id.user.save()
+
+        #EMPLOYEE PROFILE UPDATE
+        dep_id = request.POST['department']
+        emp_id.department = Department.objects.get(id=dep_id)
+
+        emp_id.designation = request.POST['designation']
+        emp_id.salary = request.POST['salary']
+        emp_id.join_date = request.POST['join_date']
+        emp_id.experience = request.POST['experience']
+
+        emp_id.save()
+
+        employee = EmployeeProfile.objects.all()
+        context = {
+            'employee' : employee
+        }
+        return render(request,'employee/Employee_list.html',context)
+    context = {
+        'emp_id' : emp_id,
+        'dep' : dep_id
+    }
+    return render(request,'employee/Employee_add.html',context)
 
 #Delete Employee Bussiness Logic  Code
 def delete_employee(request):

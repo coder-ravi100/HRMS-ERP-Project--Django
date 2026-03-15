@@ -78,22 +78,22 @@
 
                                                         <td class="text-center">
 
-                                                            <a href="/view_employee/{{ emp.id }}/" class="btn btn-sm btn-info">
+                                                            <a href="" class="btn btn-sm btn-info">
                                                                 <i class="fa fa-eye"></i>
                                                             </a>
                                                         
-                                                            <a href="/edit_employee/{{ emp.id }}/" class="btn btn-sm btn-primary">
+                                                            <a href="{% url 'edit-employee' pk=emp.id %}" class="btn btn-sm btn-primary">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
                                                         
-                                                            <a href="/delete_employee/{{ emp.id }}/" class="btn btn-sm btn-danger">
+                                                            <a href="" class="btn btn-sm btn-danger">
                                                                 <i class="fa fa-trash"></i>
                                                             </a> 
                                                                                         
                                                         </td>
 
                                                     </tr>
-
+                                                    
                                                 {% endfor %}
 
                                                 </tbody>
