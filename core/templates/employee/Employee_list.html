@@ -1,0 +1,117 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Sample Page</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <!-- Employee Table Start -->
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Employee List</h5>
+                                    </div>
+
+                                    <div class="card-body table-border-style">
+                                        <div class="table-responsive">
+
+                                            <table class="table table-striped">
+
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Photo</th>
+                                                        <th>Name</th>
+                                                        <th>Department</th>
+                                                        <th>Designation</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+
+                                                {% for emp in employees %}
+
+                                                    <tr>
+
+                                                        <td>{{ forloop.counter }}</td>
+
+                                                        <td>
+                                                            <img src="https://ui-avatars.com/api/?name={{ emp.user.first_name }}+{{ emp.user.last_name }}"
+                                                                  width="40" style="border-radius:50%;">
+                                                        </td>
+
+                                                        <td>
+                                                            {{ emp.user.first_name }} 
+                                                            {{ emp.user.last_name }}
+                                                        </td>
+
+                                                        <td>
+                                                            {{ emp.department.name }}
+                                                        </td>
+
+                                                        <td>
+                                                            {{ emp.designation }}
+                                                        </td>
+
+                                                        <td class="text-center">
+
+                                                            <a href="/view_employee/{{ emp.id }}/" class="btn btn-sm btn-info">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        
+                                                            <a href="/edit_employee/{{ emp.id }}/" class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                        
+                                                            <a href="/delete_employee/{{ emp.id }}/" class="btn btn-sm btn-danger">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a> 
+                                                                                        
+                                                        </td>
+
+                                                    </tr>
+
+                                                {% endfor %}
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Employee Table End -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}

@@ -8,5 +8,14 @@ urlpatterns = [
       path('add_department/', views.add_department, name='add-department'),
       path('list_department/', views.list_department, name='list_department'),
       path('edit_department/<int:pk>', views.edit_department, name='edit-department'),
-      path('delete_department/<int:pk>', views.delete_department, name='delete-department')
+      path('delete_department/<int:pk>', views.delete_department, name='delete-department'),
+
+
+
+      path('add_employee/', views.add_employee, name='add-employee'),
+      path('list_employee/', views.list_employee, name='list-employee'),
+      path('edit_employee/<int:pk>', views.edit_employee, name='edit-employee'),
+      path('delete_employee/<int:pk>', views.delete_employee, name='delete-employee'),
+
+
 ]
