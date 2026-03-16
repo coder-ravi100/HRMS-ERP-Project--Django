@@ -27,89 +27,58 @@
                         <!-- [ breadcrumb ] end -->
                         <!-- [ Main Content ] start -->
                         <div class="row">
-                            <!-- Employee Table Start -->
                             <div class="col-xl-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5>Employee List</h5>
+                                        <h5>Striped Table</h5>
                                     </div>
-
                                     <div class="card-body table-border-style">
                                         <div class="table-responsive">
-
                                             <table class="table table-striped">
-
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Photo</th>
-                                                        <th>Name</th>
-                                                        <th>Department</th>
-                                                        <th>Designation</th>
-                                                        <th class="text-center">Action</th>
+                                                        <th>Title</th>
+                                                        <th>assigned_to</th>
+                                                        <th>assigned_by</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
-
                                                 <tbody>
-
-                                                {% for emp in employees %}
-
+                                                    {% for task in tasks %}
                                                     <tr>
-
-                                                        <td>{{ forloop.counter }}</td>
-
+                                                        <td>{{task.id}}</td>
+                                                        <td>{{task.title}}</td>
+                                                        <td>{{task.assigned_to.first_name}} {{task.assigned_to.last_name}}</td>
+                                                        <td>{{ task.assigned_by.user.first_name }}</td>
                                                         <td>
-                                                            <img src="https://ui-avatars.com/api/?name={{ emp.user.first_name }}+{{ emp.user.last_name }}"
-                                                                  width="40" style="border-radius:50%;">
+                                                        {% if task.status == "Pending" %}
+                                                        <span class="badge badge-danger">Pending</span>
+                                                        {% elif task.status == "In Progress" %}
+                                                        <span class = "badge badge-warning">In Progress</span>
+                                                        {% else %}
+                                                        <span class="badge badge-success">Completed</span>
+                                                        {% endif %}
                                                         </td>
 
                                                         <td>
-                                                            {{ emp.user.first_name }} 
-                                                            {{ emp.user.last_name }}
-                                                        </td>
-
-                                                        <td>
-                                                            {{ emp.department.name }}
-                                                        </td>
-
-                                                        <td>
-                                                            {{ emp.designation }}
-                                                        </td>
-
-                                                        <td class="text-center">
-                                                            <a href="{% url 'show-employee' pk=emp.id %}" class="table-link  text-warning">
+                                                            <a href="{% url 'task-view' %}" class="table-link  text-warning">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                                     <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
                                                                 </span>
                                                             </a>
-                                                            <a href="{% url 'edit-employee' pk=emp.id %}" class="table-link  text-info">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>
-                                                            <a href="{% url 'delete-employee' pk=emp.id %}" class="table-link text-danger">
-                                                                <span class="fa-stack">
-                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-minus-circle fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </a>
                                                         </td>
-
                                                     </tr>
-                                                    
-                                                {% endfor %}
-
+                                                   {% endfor %}
                                                 </tbody>
-
                                             </table>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Employee Table End -->
+                            <!-- [ stiped-table ] end -->
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>

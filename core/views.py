@@ -1,7 +1,9 @@
-from django.shortcuts import render, get_object_or_404
-from .models  import User, Department, EmployeeProfile 
+from django.shortcuts import render
+from .models  import Department, EmployeeProfile ,Task
+from core.models import User
 from django.contrib import messages
 import random ,string
+
 # Create your views here.
 def admin_dashboard(request):
     return render(request,'dashboard/Admin_Dashboard.html')
@@ -235,3 +237,46 @@ def delete_employee(request,pk):
     return render(request,'employee/Employee_list.html',context)
 
 
+#---------------------------------------------------------
+#           ******TASKS SECTION******
+#---------------------------------------------------------
+
+def add_task(request):
+    employees = User.objects.filter(role="EMPLOYEE")
+
+    if request.method == "POST":
+
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        assigned_to = request.POST.get('assigned_to')
+        due_date = request.POST.get('due_date')
+        status = request.POST.get('status')
+
+        employee = User.objects.get(id = assigned_to)
+
+        Task.objects.create(
+            title = title,
+            description = description,
+            assigned_to = employee,
+            assigned_by = request.user,
+            due_date = due_date,
+            status = status
+        )
+        return render(request,'tasks/Task_list.html')
+    context = {
+        'employees' : employees
+    }
+    return render(request,'tasks/Task_add.html',context)
+
+
+def list_task(request):
+    tasks = Task.objects.select_related("assigned_to", "assigned_by")
+    
+    context = {
+        'tasks' : tasks
+    }
+    return render(request,'tasks/task_list.html',context)
+
+
+def task_view(request):
+    return render(request,'tasks/Task_view.html')

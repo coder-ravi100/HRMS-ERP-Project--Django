@@ -18,4 +18,10 @@ urlpatterns = [
       path('edit_employee/<int:pk>', views.edit_employee, name='edit-employee'),
       path('delete_employee/<int:pk>', views.delete_employee, name='delete-employee'),
 
+
+
+      path('add_task/', views.add_task, name='add-task'),
+      path('list_task/', views.list_task, name='list-task'),
+      path('task_view/', views.task_view, name='task-view'),
+
 ]
