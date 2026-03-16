@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models  import User, Department, EmployeeProfile 
 from django.contrib import messages
 import random ,string
@@ -163,9 +163,7 @@ def list_employee(request):
     return render(request,'employee/Employee_list.html',context)
 
 
-#Show Employee Bussiness Logic code
-def show_employee(request):
-    return render(request,'employee/Employee_show.html')
+
 
 #Update Employee Bussiness Logic  Code
 def edit_employee(request,pk):
@@ -192,22 +190,48 @@ def edit_employee(request,pk):
 
         emp_id.designation = request.POST['designation']
         emp_id.salary = request.POST['salary']
-        emp_id.join_date = request.POST['join_date']
+        join_date = request.POST.get('join_date')
+
+        if join_date:
+            emp_id.join_date = join_date        
+
         emp_id.experience = request.POST['experience']
 
         emp_id.save()
 
-        employee = EmployeeProfile.objects.all()
+        employees = EmployeeProfile.objects.all()
         context = {
-            'employee' : employee
+            'employees' : employees
         }
         return render(request,'employee/Employee_list.html',context)
     context = {
         'emp_id' : emp_id,
-        'dep' : dep_id
+        'dep_id' : dep_id
     }
-    return render(request,'employee/Employee_add.html',context)
+    return render(request,'employee/Employee_edit.html',context)
+
+#Show Employee Bussiness Logic code
+def show_employee(request,pk):
+    emp = EmployeeProfile.objects.get(id=pk)
+    dep = Department.objects.all()
+
+    context = {
+        'emp' : emp,
+        'dep' :dep
+    }
+    return render(request,'employee/Employee_show.html',context)
+
 
 #Delete Employee Bussiness Logic  Code
-def delete_employee(request):
-    return render(request,'employee/Employee_add.html')
+def delete_employee(request,pk):
+    emp = EmployeeProfile.objects.get(id = pk)
+    emp.user.delete()
+
+    employees = EmployeeProfile.objects.all()
+
+    context = {
+        "employees" : employees
+    }
+    return render(request,'employee/Employee_list.html',context)
+
+

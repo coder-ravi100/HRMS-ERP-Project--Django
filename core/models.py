@@ -51,7 +51,7 @@ class EmployeeProfile(models.Model):
 
     salary = models.DecimalField(max_digits=10, decimal_places=2)
 
-    join_date = models.DateField()
+    join_date = models.DateField(auto_now_add=True)
 
     experience = models.PositiveIntegerField(
         help_text="Years of experience",
