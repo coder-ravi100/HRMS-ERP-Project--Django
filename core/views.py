@@ -293,21 +293,27 @@ def task_edit(request,pk):
 
         task.save()
 
-        task = Task.objects.all()
+        tasks = Task.objects.all()
         context = {
-            'task' : task,
+            'tasks' : tasks,
             'employees' : employees
         }
         return render(request,'tasks/Task_list.html',context)
     context = {
-        'task' : task,
+        'tasks' : tasks,
         'employees' : employees
     }
     return render(request,'tasks/Task_edit.html',context)
     
 
     
-def task_delete(request):
-    return render(request,'tasks/Task_list.html')
+def task_delete(request,pk):
+    task = Task.objects.get(id=pk)
+    task.delete()
 
+    tasks = Task.objects.all()
 
+    context = {
+        'tasks' : tasks
+    }
+    return render(request,'tasks/Task_list.html',context)

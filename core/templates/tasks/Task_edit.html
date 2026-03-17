@@ -37,7 +37,7 @@
                                 
                                     <div class="card-body">
                                 
-                                        <form method="POST" action="{% url 'task-edit' task.id %}">
+                                        <form method="POST" action="{% url 'task-edit' tasks.id %}">
                                         {% csrf_token %}
                                 
                                     <div class="row">
@@ -46,7 +46,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Task Title</label>
-                                                    <input type="text" name="title" class="form-control" placeholder="Enter task title" required value="{{task.title}}">
+                                                    <input type="text" name="title" class="form-control" placeholder="Enter task title" required value="{{tasks.title}}">
                                             </div>
                                         </div>
                                 
@@ -60,7 +60,7 @@
                                     
                                                     {% for e in employees %}
                                                         <option value="{{ e.id }}"
-                                                            {% if task.assigned_to.id == e.id %}selected{% endif %}>
+                                                            {% if tasks.assigned_to.id == e.id %}selected{% endif %}>
                                                             {{ e.first_name }} {{ e.last_name }}
                                                         </option>
                                                     {% endfor %}
@@ -73,7 +73,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Due Date</label>
-                                                <input type="date" name="due_date" class="form-control" required value="{{task.due_date|date:'Y-m-d'}}">
+                                                <input type="date" name="due_date" class="form-control" required value="{{tasks.due_date|date:'Y-m-d'}}">
                                             </div>
                                         </div>
                                 
@@ -83,9 +83,9 @@
                                                 <label>Status</label>
                                                 
                                                 <select name="status" class="form-control">
-                                                    <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
-                                                    <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
-                                                    <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                                                    <option value="Pending" {% if tasks.status == "Pending" %}selected{% endif %}>Pending</option>
+                                                    <option value="In Progress" {% if tasks.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                                                    <option value="Completed" {% if tasks.status == "Completed" %}selected{% endif %}>Completed</option>
                                                 </select>
                                             
                                             </div>
@@ -97,7 +97,7 @@
                                                 <label>Description</label>
                                         
                                                     <textarea name="description" class="form-control" rows="4"
-                                                    placeholder="Write task details">{{task.description}}</textarea>
+                                                    placeholder="Write task details">{{tasks.description}}</textarea>
                                         
                                             </div>
                                         </div>
