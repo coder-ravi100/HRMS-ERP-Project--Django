@@ -39,9 +39,11 @@
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Title</th>
+                                                        <th>Description</th>
                                                         <th>assigned_to</th>
                                                         <th>assigned_by</th>
                                                         <th>Status</th>
+                                                        <th>Due Date</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -50,6 +52,7 @@
                                                     <tr>
                                                         <td>{{task.id}}</td>
                                                         <td>{{task.title}}</td>
+                                                        <td>{{task.description}}</td>
                                                         <td>{{task.assigned_to.first_name}} {{task.assigned_to.last_name}}</td>
                                                         <td>{{ task.assigned_by.user.first_name }}</td>
                                                         <td>
@@ -61,13 +64,19 @@
                                                         <span class="badge badge-success">Completed</span>
                                                         {% endif %}
                                                         </td>
-
+                                                        <td>{{task.due_date}}</td>
                                                         <td>
-                                                            <a href="{% url 'task-view' %}" class="table-link  text-warning">
+                                                            <a href="{% url 'task-edit' pk=task.id %}" class="table-link  text-info">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
-                                                                    <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
+                                                                    <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
                                                                 </span>
+                                                            </a>
+                                                            <a href="" class="table-link text-danger">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-minus-circle fa-stack-1x fa-inverse"></i>
+                                                                </span>  
                                                             </a>
                                                         </td>
                                                     </tr>

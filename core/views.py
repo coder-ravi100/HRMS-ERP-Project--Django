@@ -278,5 +278,36 @@ def list_task(request):
     return render(request,'tasks/task_list.html',context)
 
 
-def task_view(request):
-    return render(request,'tasks/Task_view.html')
+def task_edit(request,pk):
+    task = Task.objects.get(id=pk)
+    employees = User.objects.filter(role="EMPLOYEE")
+
+    if request.method == "POST":
+
+        task.title = request.POST['title']
+        task.description = request.POST['description']
+        task.assigned_to = User.objects.get(id=request.POST['assigned_to'])
+        task.assigned_by = request.user
+        task.due_date = request.POST['due_date']
+        task.status = request.POST['status']
+
+        task.save()
+
+        task = Task.objects.all()
+        context = {
+            'task' : task,
+            'employees' : employees
+        }
+        return render(request,'tasks/Task_list.html',context)
+    context = {
+        'task' : task,
+        'employees' : employees
+    }
+    return render(request,'tasks/Task_edit.html',context)
+    
+
+    
+def task_delete(request):
+    return render(request,'tasks/Task_list.html')
+
+
