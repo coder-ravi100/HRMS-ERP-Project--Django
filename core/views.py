@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models  import Department, EmployeeProfile ,Task
+from .models  import Department, EmployeeProfile ,Task ,Leave
 from core.models import User
 from django.contrib import messages
 import random ,string
@@ -7,6 +7,8 @@ import random ,string
 # Create your views here.
 def admin_dashboard(request):
     return render(request,'dashboard/Admin_Dashboard.html')
+def employee_dashboard(request):
+    return render(request,'dashboard/Employee_Dashboard.html')
 
 #---------------------------------------------------------
 #           ******DEPARTMENT SECTION******
@@ -163,7 +165,6 @@ def list_employee(request):
         'employees' : employees
     }
     return render(request,'employee/Employee_list.html',context)
-
 
 
 
@@ -326,10 +327,55 @@ def task_delete(request,pk):
 #---------------------------------------------------------
 def apply_leave(request):
 
+    if request.method == "POST":
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        reason = request.POST.get('reason')
+
+        Leave.objects.create(
+            employee = request.user,
+            start_date = start_date,
+            end_date = end_date,
+            reason = reason
+        )
+        #Fetch The Data
+        leaves = Leave.objects.filter(employee=request.user)
+        context = {
+            'leaves': leaves
+        }
+        return render(request,'leave/My_leave.html',context)
+    
     return render(request,'leave/Leave_apply.html')
 
+
+
 def leave_list(request):
-    return render(request,'leave/Leave_list.html')
+    leaves = Leave.objects.select_related('employee')
+
+    context = {
+        'leaves' : leaves
+    }
+    return render(request,'leave/Leave_list.html',context)
+
+
+
+def my_leave(request):
+    leaves = Leave.objects.filter(employee=request.user)
+    
+    context = {
+        'leaves' : leaves
+    }
+    return render(request,'leave/My_leave.html',context)
+
+def update_leave_status(request,pk):
+    leave = Leave.objects.get(id=pk)
+    if leave.status == "POST":
+        leave.status = request.POST.get('status')
+        leave.save()
+    context = {
+        'leave' : leave
+    }
+    return render(request,'leave/Leave_list.html',context)
 
 
 

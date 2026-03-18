@@ -1,4 +1,4 @@
-{% extends 'dashboard/Admin_Dashboard.html' %}
+{% extends 'dashboard/Employee_Dashboard.html' %}
 {% load static %}
 {% block mein %}
 <!-- [ Main Content ] start -->
@@ -14,11 +14,11 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12">
                                         <div class="page-header-title">
-                                            <h5 class="m-b-10">Leave List</h5>
+                                            <h5 class="m-b-10">My Leave</h5>
                                         </div>
                                         <ul class="breadcrumb">
                                             <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="#!">Leave Page</a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Leave Information</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -27,65 +27,46 @@
                         <!-- [ breadcrumb ] end -->
                         <!-- [ Main Content ] start -->
                         <div class="row">
-                            <!-- Employee Table Start -->
                             <div class="col-xl-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5>Leave List</h5>
+                                        <h5>Striped Table</h5>
                                     </div>
-
                                     <div class="card-body table-border-style">
                                         <div class="table-responsive">
-
                                             <table class="table table-striped">
-
                                                 <thead>
-
-                                                    <tr>                                                       
-                                                        <th>Employee</th>
+                                                    <tr>
                                                         <th>From</th>
                                                         <th>To</th>
                                                         <th>Reason</th>
-                                                        <th>Status</th>
-                                                        <th class="text-center">Action</th>
+                                                        <th>Status</th> 
                                                     </tr>
                                                 </thead>
-
                                                 <tbody>
                                                     {% for l in leaves %}
                                                     <tr>
-                                                        <td>Rahul</td>
-
-                                                        <td>12-06-2026</td>
-
-                                                        <td>15-06-2026</td>
-
-                                                        <td>Family Function</td>
-
-                                                        <td>Pending</td>
-
-                                                        <td class="text-center">
-                                                        <form action= "post" action = "">
-                                                            {%csrf_token %}
-                                                            <select name="status">
-                                                                <option value="Approved">Approved</option>
-                                                                <option value="Rejected">Rejected</option>
-                                                            </select>
-
-                                                            <input type="submit" value="Update">
-                                                        </form>
+                                                        
+                                                        <td>{{l.start_date}}</td>
+                                                        <td>{{l.end_date}}</td>
+                                                        <td>{{l.reason}}</td>
+                                                        <td>
+                                                            {% if l.status == "Pending" %}
+                                                            <span class="badge badge-warning">Pending</span>
+                                                            {% elif l.status == "Approved" %}
+                                                            <span class="badge badge-success">Approved</span>
+                                                            {% else %}
+                                                            <span class="badge badge-danger">Rejected</span>
+                                                            {% endif %}
                                                         </td>
                                                     </tr>
-                                                    {% endfor %}
+                                                   {% endfor %}
                                                 </tbody>
-
                                             </table>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Employee Table End -->
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>

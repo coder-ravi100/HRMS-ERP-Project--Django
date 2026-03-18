@@ -1,4 +1,4 @@
-{% extends 'dashboard/Admin_Dashboard.html' %}
+{% extends 'dashboard/Employee_Dashboard.html' %}
 {% load static %}
 {% block mein %}
 <!-- [ Main Content ] start -->
@@ -69,7 +69,7 @@
                                     
                                         <!-- Buttons -->
                                         <div class="col mt-6">
-                                            <input type="submit" class="btn btn-primary" value="Apply Leave">
+                                            <input type="submit" class="btn btn-primary" onclick="this.disabled=true;" value="Apply Leave">
                                         </div>
                                     
                                     </form>

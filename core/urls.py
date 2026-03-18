@@ -3,6 +3,7 @@ from .import views
 
 urlpatterns = [
       path('admin_dashboard/', views.admin_dashboard, name='admin-dashboard'),
+      path('employee_dashboard/', views.employee_dashboard,  name='employee-dashboard'),
 
 
       path('add_department/', views.add_department, name='add-department'),
@@ -29,5 +30,7 @@ urlpatterns = [
 
       path('leave_apply/', views.apply_leave, name='apply-leave'),
       path('leave_list/', views.leave_list, name='leave-list'),
+      path('my_leave/', views.my_leave, name='my-leave'),
+      path('leave_status/<int:pk>',views.update_leave_status, name='update-leave-status')
 
 ]
