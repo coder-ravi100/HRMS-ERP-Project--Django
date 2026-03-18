@@ -1,0 +1,90 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Employee Leave</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Leave Apply</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <!-- [ Create Employee Form ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                
+                                    <div class="card-header">
+                                    <h5>Leave Management</h5>
+                                    </div>
+                                
+                                <div class="card-body">
+                                
+                                    <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    
+                                        <div class="row">                                         
+                                            
+                                            <!-- Start Date -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                <label>Start Date</label>
+                                                <input type="date" name="start_date" class="form-control"  required>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- End Date -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                <label>End Date</label>
+                                                <input type="date" name="end_date" class="form-control"  required>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Reason -->
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                <label>Reason</label>
+                                                <textarea name="reason" class = "form-control" required></textarea>
+                                                </div>
+                                            </div>                                                                     
+                                        </div>
+                                    
+                                        <!-- Buttons -->
+                                        <div class="col mt-6">
+                                            <input type="submit" class="btn btn-primary" value="Apply Leave">
+                                        </div>
+                                    
+                                    </form>
+                                
+                                </div>
+                                </div>
+                            </div>
+                            <!-- [ Create Employee Form ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}

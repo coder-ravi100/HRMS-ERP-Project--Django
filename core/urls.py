@@ -25,4 +25,9 @@ urlpatterns = [
       path('task_edit/<int:pk>', views.task_edit, name='task-edit'),
       path('task_delete/<int:pk>', views.task_delete, name='task-delete'),
 
+
+
+      path('leave_apply/', views.apply_leave, name='apply-leave'),
+      path('leave_list/', views.leave_list, name='leave-list'),
+
 ]

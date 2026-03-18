@@ -279,19 +279,19 @@ def list_task(request):
 
 
 def task_edit(request,pk):
-    task = Task.objects.get(id=pk)
+    tasks = Task.objects.get(id=pk)
     employees = User.objects.filter(role="EMPLOYEE")
 
     if request.method == "POST":
 
-        task.title = request.POST['title']
-        task.description = request.POST['description']
-        task.assigned_to = User.objects.get(id=request.POST['assigned_to'])
-        task.assigned_by = request.user
-        task.due_date = request.POST['due_date']
-        task.status = request.POST['status']
+        tasks.title = request.POST['title']
+        tasks.description = request.POST['description']
+        tasks.assigned_to = User.objects.get(id=request.POST['assigned_to'])
+        tasks.assigned_by = request.user
+        tasks.due_date = request.POST['due_date']
+        tasks.status = request.POST['status']
 
-        task.save()
+        tasks.save()
 
         tasks = Task.objects.all()
         context = {
@@ -308,8 +308,8 @@ def task_edit(request,pk):
 
     
 def task_delete(request,pk):
-    task = Task.objects.get(id=pk)
-    task.delete()
+    tasks = Task.objects.get(id=pk)
+    tasks.delete()
 
     tasks = Task.objects.all()
 
@@ -317,3 +317,19 @@ def task_delete(request,pk):
         'tasks' : tasks
     }
     return render(request,'tasks/Task_list.html',context)
+
+
+
+
+#---------------------------------------------------------
+#           ******Leave SECTION******
+#---------------------------------------------------------
+def apply_leave(request):
+
+    return render(request,'leave/Leave_apply.html')
+
+def leave_list(request):
+    return render(request,'leave/Leave_list.html')
+
+
+

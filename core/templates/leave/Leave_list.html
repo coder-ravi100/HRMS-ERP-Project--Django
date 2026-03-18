@@ -14,11 +14,11 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12">
                                         <div class="page-header-title">
-                                            <h5 class="m-b-10">Sample Page</h5>
+                                            <h5 class="m-b-10">Leave List</h5>
                                         </div>
                                         <ul class="breadcrumb">
                                             <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Leave Page</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -27,67 +27,74 @@
                         <!-- [ breadcrumb ] end -->
                         <!-- [ Main Content ] start -->
                         <div class="row">
+                            <!-- Employee Table Start -->
                             <div class="col-xl-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h5>Striped Table</h5>
+                                        <h5>Leave List</h5>
                                     </div>
+
                                     <div class="card-body table-border-style">
                                         <div class="table-responsive">
+
                                             <table class="table table-striped">
+
                                                 <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Title</th>
-                                                        <th>Description</th>
-                                                        <th>assigned_to</th>
-                                                        <th>assigned_by</th>
+                                                    <tr>                                                       
+                                                        <th>Employee</th>
+                                                        <th>From</th>
+                                                        <th>To</th>
+                                                        <th>Reason</th>
                                                         <th>Status</th>
-                                                        <th>Due Date</th>
-                                                        <th>Action</th>
+                                                        <th class="text-center">Action</th>
                                                     </tr>
                                                 </thead>
+
                                                 <tbody>
-                                                    {% for t in tasks %}
+
                                                     <tr>
-                                                        <td>{{t.id}}</td>
-                                                        <td>{{t.title}}</td>
-                                                        <td>{{t.description}}</td>
-                                                        <td>{{t.assigned_to.first_name}} {{t.assigned_to.last_name}}</td>
-                                                        <td>{{s.assigned_by.username}}</td>
-                                                        <td>
-                                                        {% if t.status == "Pending" %}
-                                                        <span class="badge badge-danger">Pending</span>
-                                                        {% elif t.status == "In Progress" %}
-                                                        <span class = "badge badge-warning">In Progress</span>
-                                                        {% else %}
-                                                        <span class="badge badge-success">Completed</span>
-                                                        {% endif %}
-                                                        </td>
-                                                        <td>{{t.due_date}}</td>
-                                                        <td>
-                                                            <a href="{% url 'task-edit' pk=t.id %}" class="table-link  text-info">
+                                                        <td>Rahul</td>
+
+                                                        <td>12-06-2026</td>
+
+                                                        <td>15-06-2026</td>
+
+                                                        <td>Family Function</td>
+
+                                                        <td>Pending</td>
+
+                                                        <td class="text-center">
+                                                            <!-- <a href="" class="table-link  text-warning">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-eye fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a> -->
+                                                            <a href="" class="table-link  text-info">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                                     <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
                                                                 </span>
                                                             </a>
-                                                            <a href="{% url 'task-delete' pk=t.id %}" class="table-link text-danger">
+                                                            <a href="" class="table-link text-danger">
                                                                 <span class="fa-stack">
                                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                                     <i class="fa fa-minus-circle fa-stack-1x fa-inverse"></i>
-                                                                </span>  
+                                                                </span>
                                                             </a>
                                                         </td>
+
                                                     </tr>
-                                                   {% endfor %}
+                                                    
                                                 </tbody>
+
                                             </table>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- [ stiped-table ] end -->
+                            <!-- Employee Table End -->
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>

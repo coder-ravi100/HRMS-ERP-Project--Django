@@ -37,7 +37,7 @@
                                 
                                     <div class="card-body">
                                 
-                                        <form method="POST" action="{% url 'task-edit' tasks.id %}">
+                                        <form method="POST" action="{% url 'task-edit' pk=tasks.id %}">
                                         {% csrf_token %}
                                 
                                     <div class="row">
