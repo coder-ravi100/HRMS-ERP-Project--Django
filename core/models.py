@@ -15,6 +15,8 @@ class User(AbstractUser):
 
     address = models.TextField(blank=True)
 
+    email = models.EmailField(unique = True)
+    
     profile_pic = models.ImageField(
         upload_to="profile_pics/",
         default="profile_pics/default.png",

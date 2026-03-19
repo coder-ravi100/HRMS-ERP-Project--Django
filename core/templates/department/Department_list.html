@@ -52,12 +52,17 @@
                                                         <td>{{department.name}}</td>
                                                         <td>{{department.description}}</td>
                                                         <td>
-                                                            <a href="{%  url 'edit-department' pk=department.id %}" class="btn btn-sm btn-primary">
-                                                                <i class="bi bi-pencil-square"></i>
+                                                            <a href="{%  url 'edit-department' pk=department.id %}" class="table-link  text-info">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-edit fa-stack-1x fa-inverse"></i>
+                                                                </span>
                                                             </a>
-                                                            
-                                                            <a href="{% url 'delete-department' pk=department.id %}" class="btn btn-sm btn-danger">
-                                                                <i class="bi bi-trash"></i>
+                                                            <a href="{% url 'delete-department' pk=department.id %}" class="table-link text-danger">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                                                                </span>
                                                             </a>
                                                         </td>
                                                     </tr>

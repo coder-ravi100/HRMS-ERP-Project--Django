@@ -1,14 +1,58 @@
-from django.shortcuts import render
-from .models  import Department, EmployeeProfile ,Task ,Leave
-from core.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import random ,string
+
+from .forms import RegistrationForm
+from .models import Department, EmployeeProfile, Task, Leave
+from core.models import User
+
+import random
 
 # Create your views here.
+@login_required
 def admin_dashboard(request):
+    if request.user.role != "ADMIN":
+        return redirect('employee-dashboard')
     return render(request,'dashboard/Admin_Dashboard.html')
+
+@login_required
 def employee_dashboard(request):
+    if request.user.role != "EMPLOYEE":
+        return redirect('admin-dashboard')
     return render(request,'dashboard/Employee_Dashboard.html')
+
+
+def user_login(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "Invalid Credentials")
+            return redirect('user-login')
+
+        user = authenticate(request, username=user_obj.username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            # 🔥 ROLE BASED REDIRECT
+            if user.role == "ADMIN":
+                return redirect('admin-dashboard')
+            elif user.role == "EMPLOYEE":
+                return redirect('employee-dashboard')
+            else:
+                messages.error(request, "Role not assigned")
+                return redirect('user-login')
+
+        else:
+            messages.error(request, "Invalid Credentials")
+
+    return render(request,'authentication/Login.html')
+
 
 #---------------------------------------------------------
 #           ******DEPARTMENT SECTION******
@@ -110,6 +154,7 @@ def add_employee(request):
         # RANDOM PASSWORD
         l1 = ['34xx','35xx','36xx','37xx','38xx','39xx']
         password = first_name[0:2] + email[0:3] + random.choice(l1)
+        print("PASSWORD:", password)
 
         # EMPLOYEE PROFILE DATA
         dep_id = request.POST['department']
