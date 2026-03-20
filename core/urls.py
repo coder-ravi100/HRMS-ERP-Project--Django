@@ -4,6 +4,11 @@ from .import views
 urlpatterns = [
       
       path('',views.user_login, name='user-login'),
+      path('logout/', views.user_logout, name='user-logout'),
+      path('forgot/', views.forgot_password, name='forgot-password'),
+      path('reset_password/', views.reset_password, name='reset-password'),
+
+      
 
       path('admin_dashboard/', views.admin_dashboard, name='admin-dashboard'),
       path('employee_dashboard/', views.employee_dashboard,  name='employee-dashboard'),

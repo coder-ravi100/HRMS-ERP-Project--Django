@@ -1,21 +1,33 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login ,logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib import messages
-
 from .forms import RegistrationForm
+
 from .models import Department, EmployeeProfile, Task, Leave
 from core.models import User
-
+from django.utils import timezone
+from datetime  import timedelta
 import random
+from .utils import *
 
 # Create your views here.
+#---------------------------------------------------------
+#           ******ADMIN DASHBOARD SECTION******
+#---------------------------------------------------------
+@never_cache
 @login_required
 def admin_dashboard(request):
     if request.user.role != "ADMIN":
         return redirect('employee-dashboard')
     return render(request,'dashboard/Admin_Dashboard.html')
 
+
+#---------------------------------------------------------
+#           ******EMPLOYEE DASHBOARD SECTION******
+#---------------------------------------------------------
+@never_cache
 @login_required
 def employee_dashboard(request):
     if request.user.role != "EMPLOYEE":
@@ -23,6 +35,9 @@ def employee_dashboard(request):
     return render(request,'dashboard/Employee_Dashboard.html')
 
 
+#---------------------------------------------------------
+#           ******LOGIN SECTION******
+#---------------------------------------------------------
 def user_login(request):
     if request.method == "POST":
         email = request.POST.get('email')
@@ -39,19 +54,117 @@ def user_login(request):
         if user is not None:
             login(request, user)
 
-            # 🔥 ROLE BASED REDIRECT
+           
+            next_url = request.GET.get('next')
+
             if user.role == "ADMIN":
-                return redirect('admin-dashboard')
-            elif user.role == "EMPLOYEE":
-                return redirect('employee-dashboard')
+                return redirect(next_url or 'admin-dashboard')
             else:
-                messages.error(request, "Role not assigned")
-                return redirect('user-login')
+                return redirect(next_url or 'employee-dashboard')
 
         else:
             messages.error(request, "Invalid Credentials")
-
     return render(request,'authentication/Login.html')
+
+
+
+def user_logout(request):
+    logout(request)
+    request.session.flush()
+    messages.success(request, "You Have Been Logged out")
+    return redirect('user-login')
+
+
+
+def forgot_password(request):
+    if request.method == "POST":
+        action = request.POST.get('action')
+        email = request.POST.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+
+            #SEND OTP
+            if action == "send_otp":
+                otp = random.randint(1000, 9999)
+
+                user.otp = otp
+                user.otp_created_at = timezone.now()
+                user.save()
+
+                sendmailForOtp(
+                    "Password Reset OTP",
+                    "otp_template",
+                    user.email,
+                    {'otp': otp}
+                )
+
+                messages.success(request, "OTP sent to your email")
+
+            # VERIFY + RESET PASSWORD
+            elif action == "reset_password":
+                entered_otp = request.POST.get('otp')
+                password = request.POST.get('password')
+
+                # expiry check (5 min)
+                if not user.otp_created_at or user.otp_created_at < timezone.now() - timedelta(minutes=5):
+                    messages.error(request, "OTP expired")
+                    return redirect('forgot-password')
+
+                if str(user.otp) == entered_otp:
+                    user.set_password(password)
+                    user.otp = None
+                    user.save()
+
+                    messages.success(request, "Password reset successful")
+                    return redirect('user-login')
+                else:
+                    messages.error(request, "Invalid OTP")
+
+        except User.DoesNotExist:
+            messages.error(request, "Email not registered")
+
+    return render(request, 'authentication/forgot_password.html')
+
+
+
+def reset_password(request):
+    if request.method =="POST":
+        otp = request.POST.get('otp')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        try:
+            user = User.objects.get(email = email)
+            
+            #OTP Expiry (5 min)
+            if not user.otp_create_at or user.otp_create_at < timezone.now() - timedelta(minutes=5):
+                messages.error(request,"OTP Expired")
+                return redirect('forgot-password')
+            
+            #OTP Match
+            if str(user.otp) != otp:
+                messages.error(request,'Invalid OTP')
+                return redirect('forgot-password')
+            
+            #Password Match
+            if password != confirm_password:
+                messages.error(request,'Password Do Not Match')
+                return redirect('forgot-password')
+            #Correct Way
+            if user.set_password(password): #Hashing
+                user.otp = None
+                user.save()
+                
+                messages.success(request,"Password Reset Successful")
+                return redirect('user-login')
+        except User.DoesNotExist:
+            messages.error(request,'Invalid Request')
+            return redirect('forgot-password')
+        
+    return render(request,'authentication/Reset_password.html')
+
 
 
 #---------------------------------------------------------
@@ -368,7 +481,7 @@ def task_delete(request,pk):
 
 
 #---------------------------------------------------------
-#           ******Leave SECTION******
+#           ******LEAVE SECTION******
 #---------------------------------------------------------
 def apply_leave(request):
 

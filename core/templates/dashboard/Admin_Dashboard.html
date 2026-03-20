@@ -116,10 +116,11 @@
 					</li>
 					
 					<li class="nav-item pcoded-menu-caption">
-						<label>Pages</label>
+						<label>Auth</label>
 					</li>
-					
-					<li class="nav-item"><a href="" class="nav-link"><span class="pcoded-micon"><i class="feather icon-log-out"></i></span><span class="pcoded-mtext">Logout</span></a></li>
+					<form action="POST" action="{% url 'user-logout' %}">
+					<li class="nav-item"><a href="{% url 'user-logout' %}" class="nav-link"><span class="pcoded-micon"><i class="feather icon-log-out"></i></span><span class="pcoded-mtext">Logout</span></a></li>
+					</form>
 				</ul>
 				
 			</div>

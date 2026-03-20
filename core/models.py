@@ -22,6 +22,8 @@ class User(AbstractUser):
         default="profile_pics/default.png",
         blank=True
     )
+    otp = models.IntegerField(null=True, blank=True)
+    otp_create_at = models.DateTimeField(null=True,blank=True)
 
     def __str__(self):
         return self.username
