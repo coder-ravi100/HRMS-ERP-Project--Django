@@ -243,7 +243,7 @@ def delete_department(request,pk):
 #           ******EMPLOYEE SECTION******
 #---------------------------------------------------------
 
-#Create Employee Bussiness Logic  Code
+#Create Employee Bussiness Logic Code
 def add_employee(request):
 
     departments = Department.objects.all()
@@ -396,7 +396,7 @@ def delete_employee(request,pk):
 #---------------------------------------------------------
 #           ******TASKS SECTION******
 #---------------------------------------------------------
-
+#add Task Bussiness Logic  Code
 def add_task(request):
     employees = User.objects.filter(role="EMPLOYEE")
 
@@ -426,6 +426,7 @@ def add_task(request):
     return render(request,'tasks/Task_add.html',context)
 
 
+#List Task Bussiness Logic  Code
 def list_task(request):
     tasks = Task.objects.select_related("assigned_to", "assigned_by").order_by('-id')
     
@@ -435,6 +436,7 @@ def list_task(request):
     return render(request,'tasks/task_list.html',context)
 
 
+#Edit Task Bussiness Logic  Code
 def task_edit(request,pk):
     tasks = Task.objects.get(id=pk)
     employees = User.objects.filter(role="EMPLOYEE")
@@ -467,7 +469,7 @@ def task_edit(request,pk):
     return render(request,'tasks/Task_edit.html',context)
     
 
-    
+#Delete Task Bussiness Logic  Code  
 def task_delete(request,pk):
     tasks = Task.objects.get(id=pk)
     tasks.delete()
@@ -479,6 +481,8 @@ def task_delete(request,pk):
     }
     return render(request,'tasks/Task_list.html',context)
 
+
+
 #Employee Tasks Businees Logic 
 def my_task(request):
     tasks = Task.objects.filter(assigned_to=request.user).select_related('assigned_to','assigned_by')
@@ -486,6 +490,8 @@ def my_task(request):
         'tasks' : tasks
     }
     return render(request,'tasks/My_task.html',context)
+
+
 
 #Employee Task Mark Business Logic
 def update_task_status(request,pk):
@@ -499,6 +505,7 @@ def update_task_status(request,pk):
 #---------------------------------------------------------
 #           ******LEAVE SECTION******
 #---------------------------------------------------------
+#Apply Employee Leave Bussiness Logic  Code
 def apply_leave(request):
     if request.user.role != "EMPLOYEE":
         return redirect('employee-dashboard')
@@ -516,7 +523,7 @@ def apply_leave(request):
     return render(request, 'leave/Leave_apply.html')
 
 
-
+#Admin Show Leave List Bussiness Logic  Code
 def leave_list(request):
     leaves = Leave.objects.select_related('employee').order_by('-id')
 
@@ -526,7 +533,7 @@ def leave_list(request):
     return render(request,'leave/Leave_list.html',context)
 
 
-
+#Employee Leave Show Bussiness Logic  Code
 def my_leave(request):
     leaves = Leave.objects.filter(employee=request.user).order_by('-id')
     
@@ -536,13 +543,15 @@ def my_leave(request):
     return render(request,'leave/My_leave.html',context)
 
 
+
+#Update Leave For Admin Bussiness Logic  Code
 def update_leave_status(request,pk):
     
     if request.method == "POST":
         try:
             task = Task.objects.get(id=pk)
         except Task.DoesNotExist:
-            return redirect('task-list')   # silently ignore
+            return redirect('task-list')  
 
         task.status = request.POST.get('status')
         task.save()
