@@ -1,98 +1,102 @@
 {% extends 'dashboard/Admin_Dashboard.html' %}
 {% load static %}
 {% block mein %}
-<!-- [ Main Content ] start -->
+
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
                 <div class="main-body">
                     <div class="page-wrapper">
-                        <!-- [ breadcrumb ] start -->
-                        <div class="page-header">
+
+                        <!-- Header -->
+                        <div class="page-header mb-3">
                             <div class="page-block">
                                 <div class="row align-items-center">
                                     <div class="col-md-12">
-                                        <div class="page-header-title">
-                                            <h5 class="m-b-10">Leave List</h5>
-                                        </div>
-                                        <ul class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="#!">Leave Page</a></li>
-                                        </ul>
+                                        <h5 class="m-b-10">Leave Management</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- [ breadcrumb ] end -->
-                        <!-- [ Main Content ] start -->
-                        <div class="row">
-                            <!-- Employee Table Start -->
-                            <div class="col-xl-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Leave List</h5>
-                                    </div>
 
-                                    <div class="card-body table-border-style">
-                                        <div class="table-responsive">
+                        <!-- Table -->
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h5 class="mb-0">Leave Requests</h5>
+                            </div>
 
-                                            <table class="table table-striped">
+                            <div class="card-body">
+                                <div class="table-responsive">
 
-                                                <thead>
+                                    <table class="table table-hover align-middle text-center">
 
-                                                    <tr>                                                       
-                                                        <th>Employee</th>
-                                                        <th>From</th>
-                                                        <th>To</th>
-                                                        <th>Reason</th>
-                                                        <th>Status</th>
-                                                        <th class="text-center">Action</th>
-                                                    </tr>
-                                                </thead>
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Employee</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Reason</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
 
-                                                <tbody>
-                                                    {% for l in leaves %}
-                                                    <tr>
-                                                        <td>Rahul</td>
+                                        <tbody>
+                                            {% for l in leaves %}
+                                            <tr>
+                                                <td>{{ l.employee.username }}</td>
+                                                <td>{{ l.start_date }}</td>
+                                                <td>{{ l.end_date }}</td>
+                                                <td>{{ l.reason }}</td>
 
-                                                        <td>12-06-2026</td>
+                                                <!-- Status Badge -->
+                                                <td>
+                                                    {% if l.status == "Approved" %}
+                                                        <span class="badge badge-success">Approved</span>
+                                                    {% elif l.status == "Rejected" %}
+                                                        <span class="badge badge-danger">Rejected</span>
+                                                    {% else %}
+                                                        <span class="badge badge-warning text-dark">Pending</span>
+                                                    {% endif %}
+                                                </td>
 
-                                                        <td>15-06-2026</td>
+                                                <!-- Action -->
+                                                <td>
+                                                    <form method="post" action="{% url 'update-leave-status' l.id %}"
+                                                          style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                                                        {% csrf_token %}
+                                                
+                                                        <select name="status"
+                                                                style="width:110px; height:32px; border-radius:5px; border:1px solid #ccc; font-size:13px;">
+                                                            <option value="Approved">Approve</option>
+                                                            <option value="Rejected">Reject</option>
+                                                        </select>
+                                                
+                                                        <button type="submit" class="btn btn-sm btn-primary" style="height:32px;">
+                                                            Update
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6">No leave requests found</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
 
-                                                        <td>Family Function</td>
+                                    </table>
 
-                                                        <td>Pending</td>
-
-                                                        <td class="text-center">
-                                                        <form action= "post" action = "">
-                                                            {%csrf_token %}
-                                                            <select name="status">
-                                                                <option value="Approved">Approved</option>
-                                                                <option value="Rejected">Rejected</option>
-                                                            </select>
-
-                                                            <input type="submit" value="Update">
-                                                        </form>
-                                                        </td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                            <!-- Employee Table End -->
                         </div>
-                        <!-- [ Main Content ] end -->
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- [ Main Content ] end -->
+
 {% endblock %}

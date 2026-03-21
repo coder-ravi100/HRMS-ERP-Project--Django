@@ -474,38 +474,46 @@ def task_delete(request,pk):
     }
     return render(request,'tasks/Task_list.html',context)
 
+#Employee Tasks Businees Logic 
+def my_task(request):
+    tasks = Task.objects.filter(assigned_to=request.user).select_related('assigned_to','assigned_by')
+    context = {
+        'tasks' : tasks
+    }
+    return render(request,'tasks/My_task.html',context)
 
+#Employee Task Mark Business Logic
+def update_task_status(request,pk):
+    task = Task.objects.get(id=pk,assigned_to=request.user)
+
+    task.status = 'Completed'
+    task.save()
+    return redirect('my-task')
 
 
 #---------------------------------------------------------
 #           ******LEAVE SECTION******
 #---------------------------------------------------------
 def apply_leave(request):
+    if request.user.role != "EMPLOYEE":
+        return redirect('employee-dashboard')
 
     if request.method == "POST":
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        reason = request.POST.get('reason')
-
         Leave.objects.create(
-            employee = request.user,
-            start_date = start_date,
-            end_date = end_date,
-            reason = reason
+            employee=request.user,
+            start_date=request.POST.get("start_date"),
+            end_date=request.POST.get("end_date"),
+            reason=request.POST.get("reason"),
+            status="Pending"
         )
-        #Fetch The Data
-        leaves = Leave.objects.filter(employee=request.user)
-        context = {
-            'leaves': leaves
-        }
-        return render(request,'leave/My_leave.html',context)
-    
-    return render(request,'leave/Leave_apply.html')
+        return redirect('my-leave')
+
+    return render(request, 'leave/Leave_apply.html')
 
 
 
 def leave_list(request):
-    leaves = Leave.objects.select_related('employee')
+    leaves = Leave.objects.select_related('employee').order_by('-id')
 
     context = {
         'leaves' : leaves
@@ -515,22 +523,26 @@ def leave_list(request):
 
 
 def my_leave(request):
-    leaves = Leave.objects.filter(employee=request.user)
+    leaves = Leave.objects.filter(employee=request.user).order_by('-id')
     
     context = {
         'leaves' : leaves
     }
     return render(request,'leave/My_leave.html',context)
 
+
 def update_leave_status(request,pk):
-    leave = Leave.objects.get(id=pk)
-    if leave.status == "POST":
-        leave.status = request.POST.get('status')
-        leave.save()
-    context = {
-        'leave' : leave
-    }
-    return render(request,'leave/Leave_list.html',context)
+   if request.user.role != "ADMIN":
+       return redirect('employee-dashboard')
+   if request.method == "POST":
+       try:
+            leave = Leave.objects.get(id=pk)
+            leave.status = request.POST.get('status')
+            leave.save()
+       except Leave.DoesNotExist:
+           pass
+   return redirect('leave-list')
+    
 
 
 

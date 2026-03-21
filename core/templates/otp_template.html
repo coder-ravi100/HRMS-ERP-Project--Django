@@ -6,8 +6,20 @@
     <title>Document</title>
 </head>
 <body>
-    <h3>Password Reset OTP</h3>
+    <!-- <h3>Password Reset OTP</h3>
     <p>Your OTP is: <b>{{ data.otp }}</b></p>
-    <p>Valid for 5 minutes.</p>
+    <p>Valid for 5 minutes.</p> -->
+
+    <div class="p-5 text-center bg-body-tertiary">
+        <div class="container py-5">
+          <h1 class="text-body-emphasis">Password Reset OTP</h1>
+          <p class="col-lg-8 mx-auto lead">
+            Your OTP Is :
+            <code>{{data.otp}}</code> 
+            <code>Valid For 5 minutes</code>
+          </p>
+          
+        </div>
+      </div>
 </body>
 </html>

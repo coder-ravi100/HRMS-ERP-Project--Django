@@ -1,0 +1,95 @@
+{% extends 'dashboard/Employee_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Tasks</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">My Tasks</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Striped Table</h5>
+                                    </div>
+                                    <div class="card-body table-border-style">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Title</th>
+                                                        <th>Description</th>
+                                                        <th>assigned_to</th>
+                                                        <th>Status</th>
+                                                        <th>Due Date</th>
+                                                        <th>Action</th>
+                                                        
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for t in tasks %}
+                                                    <tr>
+                                                        <td>{{t.id}}</td>
+                                                        <td>{{t.title}}</td>
+                                                        <td>{{t.description}}</td>
+                                                        <td>{{t.assigned_to.first_name}} {{t.assigned_to.last_name}}</td>
+                                                        
+                                                        <td>
+                                                        {% if t.status == "Pending" %}
+                                                        <span class="badge badge-danger">Pending</span>
+                                                        {% elif t.status == "In Progress" %}
+                                                        <span class = "badge badge-warning">In Progress</span>
+                                                        {% else %}
+                                                        <span class="badge badge-success">Completed</span>
+                                                        {% endif %}
+                                                        </td>
+                                                        <td>{{t.due_date}}</td>
+                                                        <td>
+                                                            {% if t.status != "Completed" %}
+                                                            <a class = "btn btn-sm btn-success" href="{% url 'update-task-status' t.id %}">
+                                                                Marks Completed
+                                                            </a>
+                                                            {% else %}
+                                                            <span class="badge btn-sm badge-success">Done</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                   {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ stiped-table ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}
