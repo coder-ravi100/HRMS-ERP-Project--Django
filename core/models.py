@@ -23,7 +23,8 @@ class User(AbstractUser):
         blank=True
     )
     otp = models.IntegerField(null=True, blank=True)
-    otp_create_at = models.DateTimeField(null=True,blank=True)
+    otp_created_at = models.DateTimeField(null=True,blank=True)
+    otp_attempts = models.IntegerField(default=0)
 
     def __str__(self):
         return self.username

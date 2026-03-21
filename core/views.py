@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login ,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
-from .forms import RegistrationForm
+from .forms import * #RegistrationForm
 
 from .models import Department, EmployeeProfile, Task, Leave
 from core.models import User
@@ -78,48 +78,35 @@ def user_logout(request):
 
 def forgot_password(request):
     if request.method == "POST":
-        action = request.POST.get('action')
         email = request.POST.get('email')
 
         try:
             user = User.objects.get(email=email)
 
-            #SEND OTP
-            if action == "send_otp":
-                otp = random.randint(1000, 9999)
+            #cooldown (60 sec)
+            if user.otp_created_at and user.otp_created_at > timezone.now() - timedelta(seconds=60):
+                messages.error(request, "Wait before requesting new OTP")
+                return redirect('forgot-password')
 
-                user.otp = otp
-                user.otp_created_at = timezone.now()
-                user.save()
+            #generate 6-digit OTP
+            otp = str(random.randint(100000, 999999))
 
-                sendmailForOtp(
-                    "Password Reset OTP",
-                    "otp_template",
-                    user.email,
-                    {'otp': otp}
-                )
+            user.otp = otp
+            user.otp_created_at = timezone.now()
+            user.otp_attempts = 0
+            user.save()
 
-                messages.success(request, "OTP sent to your email")
+            sendmailForOtp(
+                "Password Reset OTP",
+                "otp_template",
+                user.email,
+                {'otp': otp}
+            )
 
-            # VERIFY + RESET PASSWORD
-            elif action == "reset_password":
-                entered_otp = request.POST.get('otp')
-                password = request.POST.get('password')
+            request.session['reset_email'] = email
 
-                # expiry check (5 min)
-                if not user.otp_created_at or user.otp_created_at < timezone.now() - timedelta(minutes=5):
-                    messages.error(request, "OTP expired")
-                    return redirect('forgot-password')
-
-                if str(user.otp) == entered_otp:
-                    user.set_password(password)
-                    user.otp = None
-                    user.save()
-
-                    messages.success(request, "Password reset successful")
-                    return redirect('user-login')
-                else:
-                    messages.error(request, "Invalid OTP")
+            messages.success(request, "OTP sent")
+            return redirect('reset-password')
 
         except User.DoesNotExist:
             messages.error(request, "Email not registered")
@@ -127,43 +114,53 @@ def forgot_password(request):
     return render(request, 'authentication/forgot_password.html')
 
 
-
 def reset_password(request):
-    if request.method =="POST":
+    email = request.session.get('reset_email')
+
+    if not email:
+        messages.error(request, "Session expired")
+        return redirect('forgot-password')
+
+    if request.method == "POST":
         otp = request.POST.get('otp')
-        email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
         try:
-            user = User.objects.get(email = email)
-            
-            #OTP Expiry (5 min)
-            if not user.otp_create_at or user.otp_create_at < timezone.now() - timedelta(minutes=5):
-                messages.error(request,"OTP Expired")
+            user = User.objects.get(email=email)
+
+            #OTP expiry (5 min)
+            if not user.otp_created_at or user.otp_created_at < timezone.now() - timedelta(minutes=5):
+                messages.error(request, "OTP expired")
                 return redirect('forgot-password')
-            
-            #OTP Match
+
+            #OTP check
             if str(user.otp) != otp:
-                messages.error(request,'Invalid OTP')
-                return redirect('forgot-password')
-            
-            #Password Match
+                messages.error(request, "Invalid OTP")
+                return redirect('reset-password')
+
+            #password match
             if password != confirm_password:
-                messages.error(request,'Password Do Not Match')
-                return redirect('forgot-password')
-            #Correct Way
-            if user.set_password(password): #Hashing
-                user.otp = None
-                user.save()
-                
-                messages.success(request,"Password Reset Successful")
-                return redirect('user-login')
+                messages.error(request, "Passwords do not match")
+                return redirect('reset-password')
+
+            #update password
+            user.set_password(password)
+            user.otp = None
+            user.otp_created_at = None
+            user.save()
+
+            #clear session
+            request.session.pop('reset_email', None)
+
+            messages.success(request, "Password reset successful")
+            return redirect('user-login')
+
         except User.DoesNotExist:
-            messages.error(request,'Invalid Request')
+            messages.error(request, "User not found")
             return redirect('forgot-password')
-        
-    return render(request,'authentication/Reset_password.html')
+
+    return render(request,'authentication/Reset_password.html',{'email' : email})
 
 
 
