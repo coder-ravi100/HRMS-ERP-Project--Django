@@ -54,7 +54,7 @@
                                                         <td>{{t.title}}</td>
                                                         <td>{{t.description}}</td>
                                                         <td>{{t.assigned_to.first_name}} {{t.assigned_to.last_name}}</td>
-                                                        <td>{{s.assigned_by.username}}</td>
+                                                        <td>{{t.assigned_by.username}}</td>
                                                         <td>
                                                         {% if t.status == "Pending" %}
                                                         <span class="badge badge-danger">Pending</span>

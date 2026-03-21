@@ -418,15 +418,16 @@ def add_task(request):
             due_date = due_date,
             status = status
         )
-        return render(request,'tasks/Task_list.html')
+        return redirect('list-task')
     context = {
         'employees' : employees
     }
+    
     return render(request,'tasks/Task_add.html',context)
 
 
 def list_task(request):
-    tasks = Task.objects.select_related("assigned_to", "assigned_by")
+    tasks = Task.objects.select_related("assigned_to", "assigned_by").order_by('-id')
     
     context = {
         'tasks' : tasks
@@ -448,17 +449,21 @@ def task_edit(request,pk):
         tasks.status = request.POST['status']
 
         tasks.save()
-
+    
         tasks = Task.objects.all()
+        
         context = {
             'tasks' : tasks,
             'employees' : employees
         }
+        
         return render(request,'tasks/Task_list.html',context)
+        
     context = {
         'tasks' : tasks,
         'employees' : employees
     }
+    
     return render(request,'tasks/Task_edit.html',context)
     
 
@@ -532,17 +537,16 @@ def my_leave(request):
 
 
 def update_leave_status(request,pk):
-   if request.user.role != "ADMIN":
-       return redirect('employee-dashboard')
-   if request.method == "POST":
-       try:
-            leave = Leave.objects.get(id=pk)
-            leave.status = request.POST.get('status')
-            leave.save()
-       except Leave.DoesNotExist:
-           pass
-   return redirect('leave-list')
     
+    if request.method == "POST":
+        try:
+            task = Task.objects.get(id=pk)
+        except Task.DoesNotExist:
+            return redirect('task-list')   # silently ignore
 
+        task.status = request.POST.get('status')
+        task.save()
+
+    return redirect('task-list')
 
 

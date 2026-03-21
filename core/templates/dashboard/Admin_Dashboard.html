@@ -42,7 +42,26 @@
 		</div>
 	</div>
 	<!-- [ Pre-loader ] End -->
-
+		<!--[ Alter Message ] Start -->
+		{% if messages %}
+		<div style="position: fixed; top: 20px; right: 20px; z-index: 9999; width: 300px;">
+		{% for message in messages %}
+			<div class="alert 
+				{% if message.tags == 'success' %}alert-success
+				{% elif message.tags == 'error' %}alert-danger
+				{% elif message.tags == 'warning' %}alert-warning
+				{% else %}alert-info
+				{% endif %}
+				alert-dismissible fade show" role="alert">
+	
+				{{ message }}
+	
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endfor %}
+		</div>
+		{% endif %}
+		<!--[ Alter Message ] End-->
 	<!-- [ navigation menu ] start -->
 	<nav class="pcoded-navbar menupos-fixed menu-light brand-blue ">
 		<div class="navbar-wrapper ">
