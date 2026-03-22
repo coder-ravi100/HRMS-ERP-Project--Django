@@ -144,12 +144,15 @@ class Attendance(models.Model):
 
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
 
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
 
     status = models.CharField(max_length=20, choices=STATUS)
+
+    class Meta:
+        unique_together = ['employee', 'date']  # 🔥 interviewer ko impress karega
 
     def __str__(self):
         return f"{self.employee.username} - {self.date}"

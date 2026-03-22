@@ -118,8 +118,13 @@
 						<label>Admin Management</label>
 					</li>
 
-					<li class="nav-item">
-						<a href="" class="nav-link"><span class="pcoded-micon"><i class="feather icon-clock"></i></span><span class="pcoded-mtext">Attendance</span></a>
+					<li class="nav-item pcoded-hasmenu">
+						<a href="#!" class="nav-link"><span class="pcoded-micon"><i class="feather icon-clock"></i></span><span class="pcoded-mtext">Attendance</span></a>
+						<ul class="pcoded-submenu">
+							<li class=""><a href="{% url 'add-attendance' %}" class="">Add</a></li>
+							<li class=""><a href="{% url 'list-attendance' %}" class="">List</a></li>
+							
+						</ul>
 					</li>
 
 					<li class="nav-item">

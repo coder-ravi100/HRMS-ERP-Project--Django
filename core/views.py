@@ -5,7 +5,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib import messages
 from .forms import * #RegistrationForm
 
-from .models import Department, EmployeeProfile, Task, Leave
+from .models import Department, EmployeeProfile, Task, Leave, Attendance
 from core.models import User
 from django.utils import timezone
 from datetime  import timedelta
@@ -559,3 +559,29 @@ def update_leave_status(request,pk):
     return redirect('task-list')
 
 
+
+#---------------------------------------------------------
+#           ******ATTENDANCE SECTION******
+#---------------------------------------------------------
+
+#Employee Attendance Bussiness Logic
+def my_attendance(request):
+    return render(request,'attendance/My_attendance.html')
+
+#--Curd For Employee By Admin 
+
+#Add Attendance Bussiness Logic Code
+def add_attendance(request):
+    return render(request,'attendance/Attendance_add.html')
+
+
+#List Attendance Bussiness Logic Code
+def list_attendance(request):
+    return render(request, 'attendance/Attendance_list.html')
+
+
+def edit_attendance(request):
+    return render(request,'attendance/Attendance_edit.html')
+
+def delete_attendance(request):
+    return render(request,'attendance/Attendance_list.html')

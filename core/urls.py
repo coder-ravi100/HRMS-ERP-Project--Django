@@ -42,6 +42,15 @@ urlpatterns = [
       path('leave_apply/', views.apply_leave, name='apply-leave'),
       path('leave_list/', views.leave_list, name='leave-list'),
       path('my_leave/', views.my_leave, name='my-leave'),
-      path('leave_status/<int:pk>',views.update_leave_status, name='update-leave-status')
+      path('leave_status/<int:pk>',views.update_leave_status, name='update-leave-status'),
+
+
+      
+      path('add_attendance/', views.add_attendance, name = 'add-attendance'),
+      path('list_attendance/',  views.list_attendance, name='list-attendance'),
+      path('edit_attendance/<int:pk>', views.edit_attendance, name='edit-attendance'),
+      path('delete_attendance/<int:pk>',views.delete_attendance, name='delete-attendance'),
+      
+      path('my_attendance/', views.my_attendance, name='my-attendance'),
 
 ]

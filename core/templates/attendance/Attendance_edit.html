@@ -1,0 +1,93 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Sample Page</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <!-- [ sample-page ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                        
+                                            <div class="row g-3">
+                                        
+                                                <div class="col-md-6">
+                                                <label>Employee</label>
+                                                <select name="employee" class="form-control">
+                                                    {% for emp in employees %}
+                                                    <option value="{{ emp.id }}">{{ emp.username }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                </div>
+                                        
+                                                <div class="col-md-6">
+                                                <label>Date</label>
+                                                <input type="date" name="date" class="form-control">
+                                                </div>
+                                        
+                                                <div class="col-md-6">
+                                                <label>Check In</label>
+                                                <input type="time" name="check_in" class="form-control">
+                                                </div>
+                                        
+                                                <div class="col-md-6">
+                                                <label>Check Out</label>
+                                                <input type="time" name="check_out" class="form-control">
+                                                </div>
+                                        
+                                                <div class="col-md-6">
+                                                <label>Status</label>
+                                                <select name="status" class="form-control">
+                                                    <option value="Present">Present</option>
+                                                    <option value="Absent">Absent</option>
+                                                    <option value="Half Day">Half Day</option>
+                                                </select>
+                                                </div>
+                                        
+                                            </div>
+                                        
+                                            <button class="btn btn-primary mt-3">Save</button>
+                                        
+                                        </form>
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <!-- [ sample-page ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}
