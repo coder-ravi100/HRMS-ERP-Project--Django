@@ -14,11 +14,11 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-12">
                                         <div class="page-header-title">
-                                            <h5 class="m-b-10">Sample Page</h5>
+                                            <h5 class="m-b-10">Attendance</h5>
                                         </div>
                                         <ul class="breadcrumb">
                                             <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Attendance Add</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -27,11 +27,13 @@
                         <!-- [ breadcrumb ] end -->
                         <!-- [ Main Content ] start -->
                         <div class="row">
-                            <!-- [ sample-page ] start -->
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        
+                                    <h5>Attendance Create</h5>
+                                    </div>
+                                
+                                    <div class="card-body">
                                         <form method="POST">
                                             {% csrf_token %}
                                         
@@ -75,12 +77,8 @@
                                             <button class="btn btn-primary mt-3">Save</button>
                                         
                                         </form>
-                                        
                                     </div>
-                                    
                                 </div>
-                            </div>
-                            <!-- [ sample-page ] end -->
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>

@@ -564,24 +564,108 @@ def update_leave_status(request,pk):
 #           ******ATTENDANCE SECTION******
 #---------------------------------------------------------
 
-#Employee Attendance Bussiness Logic
+#Employee Attendance Logic code
 def my_attendance(request):
     return render(request,'attendance/My_attendance.html')
 
 #--Curd For Employee By Admin 
 
-#Add Attendance Bussiness Logic Code
+#Add Attendance Logic Code
+@login_required
 def add_attendance(request):
-    return render(request,'attendance/Attendance_add.html')
+    employees = User.objects.filter(role="EMPLOYEE")
+
+    if request.method == "POST":
+        employee_id = request.POST.get('employee')
+        date = request.POST.get('date')
+
+        # if not date:
+        #     messages.error(request,"Date Is Required")
+        #     return redirect('add-attendance')
+        
+        check_in = request.POST.get('check_in')
+        check_out = request.POST.get('check_out')
+        status = request.POST.get('status')
+
+        #Duplicate Check Logic code
+        if Attendance.objects.filter(employee_id=employee_id, date=date).exists():
+            messages.error(request, "Attendance Already Exists For This Date")
+            return redirect('add-attendance')
+        Attendance.objects.create(
+            employee_id = employee_id,
+            date = date,
+            check_in = check_in if check_in else None,
+            check_out = check_out if check_out else None,
+            status = status
+        )
+        print(check_in, type(check_in))
+        messages.success(request,"Attendance Added Successfully")
+        return redirect('add-attendance')
+    context = {
+        'employees' : employees
+    }
+    return render(request,'attendance/Attendance_add.html',context)
 
 
-#List Attendance Bussiness Logic Code
+
+#List Attendance Logic Code
 def list_attendance(request):
-    return render(request, 'attendance/Attendance_list.html')
+    attendance = Attendance.objects.select_related('employee').all().order_by('-date')
+    context = {
+        'attendance' : attendance
+    }
+    return render(request, 'attendance/Attendance_list.html',context)
 
 
-def edit_attendance(request):
-    return render(request,'attendance/Attendance_edit.html')
 
-def delete_attendance(request):
-    return render(request,'attendance/Attendance_list.html')
+#Edit Attendance Logic code
+def edit_attendance(request,pk):
+    try:
+        attendance = Attendance.objects.get(id=pk)
+    except Attendance.DoesNotExist:
+        messages.error(request,"Record  Not Found")
+        return redirect('list-attendance')
+    employees = User.objects.filter(role="EMPLOYEE")
+    
+    if request.method == 'POST':
+        employee_id = request.POST.get('employee')
+        date = request.POST.get('date')
+        check_in = request.POST.get('check_in')
+        check_out = request.POST.get('check_out')
+        status = request.POST.get('status')
+
+        #Duplicate Attendance Check Logic
+        if Attendance.objects.filter(employee_id=employee_id, date=date).exclude(id=pk).exists():
+            messages.error(request, "Attendance Already Exists")
+            return redirect('edit-attendance',pk=pk)
+        attendance.employee_id = employee_id
+        attendance.date = date
+        attendance.check_in = check_in
+        attendance.check_out = check_out
+        attendance.status = status
+
+        attendance.save()
+        print("DATE-----:",date)
+        print(check_in, type(check_in))
+
+        messages.success(request,"Update Successfully")
+        return redirect('list-attendance')
+    context = {
+        'attendance' : attendance,
+        'employees' : employees
+    }
+    return render(request,'attendance/Attendance_edit.html',context)
+
+
+#Delete Attendance Logic code
+def delete_attendance(request,pk):
+    try:
+        attendance = Attendance.objects.get(id=pk)
+    except Attendance.DoesNotExist:
+        messages.error(request,"Record Not Found")
+        return  redirect('list-attendance')
+    
+    attendance.delete()
+    messages.success(request,"Delete Successfully")
+    
+    return redirect('list-attendance')
