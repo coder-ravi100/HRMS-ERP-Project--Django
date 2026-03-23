@@ -614,47 +614,18 @@ def my_attendance(request):
 #--Curd For Employee By Admin 
 
 #Add Attendance Logic Code
-@login_required
-def add_attendance(request):
-    employees = User.objects.filter(role="EMPLOYEE")
-
-    if request.method == "POST":
-        employee_id = request.POST.get('employee')
-        date = request.POST.get('date')
-
-        # if not date:
-        #     messages.error(request,"Date Is Required")
-        #     return redirect('add-attendance')
-        
-        check_in = request.POST.get('check_in')
-        check_out = request.POST.get('check_out')
-        status = request.POST.get('status')
-
-        #Duplicate Check Logic code
-        if Attendance.objects.filter(employee_id=employee_id, date=date).exists():
-            messages.error(request, "Attendance Already Exists For This Date")
-            return redirect('add-attendance')
-        Attendance.objects.create(
-            employee_id = employee_id,
-            date = date,
-            check_in = check_in if check_in else None,
-            check_out = check_out if check_out else None,
-            status = status
-        )
-        print(check_in, type(check_in))
-        messages.success(request,"Attendance Added Successfully")
-        return redirect('add-attendance')
-    context = {
-        'employees' : employees
-    }
-    return render(request,'attendance/Attendance_add.html',context)
-
+# @login_required
+# def add_attendance(request):
+#     return render(request,'attendance/Attendance_add.html')
 
 
 #List Attendance Logic Code
+@login_required
 def list_attendance(request):
-    attendance = Attendance.objects.select_related('employee').all().order_by('-date')
-    context = {
+    if request.user.role != "ADMIN":
+        return redirect('admin-dashboard')
+    attendance = Attendance.objects.all().order_by('-date')
+    context =  {
         'attendance' : attendance
     }
     return render(request, 'attendance/Attendance_list.html',context)
@@ -662,53 +633,51 @@ def list_attendance(request):
 
 
 #Edit Attendance Logic code
+@login_required
 def edit_attendance(request,pk):
-    try:
-        attendance = Attendance.objects.get(id=pk)
-    except Attendance.DoesNotExist:
-        messages.error(request,"Record  Not Found")
-        return redirect('list-attendance')
-    employees = User.objects.filter(role="EMPLOYEE")
+    if request.user.role != "ADMIN":
+        return redirect('admin-dashboard')
     
-    if request.method == 'POST':
-        employee_id = request.POST.get('employee')
-        date = request.POST.get('date')
+    try:
+        attendace = Attendance.objects.get(id = pk)
+    except Attendance.DoesNotExist:
+        messages.error(request, "Record Not Found")
+        return redirect('list-attendance')
+    
+    if request.method == "POST":
         check_in = request.POST.get('check_in')
         check_out = request.POST.get('check_out')
         status = request.POST.get('status')
+        
+        attendace.check_in = check_in or None
+        attendace.check_out = check_out or None
+        attendace.status = status
 
-        #Duplicate Attendance Check Logic
-        if Attendance.objects.filter(employee_id=employee_id, date=date).exclude(id=pk).exists():
-            messages.error(request, "Attendance Already Exists")
-            return redirect('edit-attendance',pk=pk)
-        attendance.employee_id = employee_id
-        attendance.date = date
-        attendance.check_in = check_in
-        attendance.check_out = check_out
-        attendance.status = status
+        attendace.save()
+        messages.success(request, "Update Successfully")
 
-        attendance.save()
-        print("DATE-----:",date)
-        print(check_in, type(check_in))
-
-        messages.success(request,"Update Successfully")
         return redirect('list-attendance')
+    employees = User.objects.filter(role="EMPLOYEE")
     context = {
-        'attendance' : attendance,
+        'attendance' : attendace,
         'employees' : employees
     }
     return render(request,'attendance/Attendance_edit.html',context)
 
 
 #Delete Attendance Logic code
+@login_required
 def delete_attendance(request,pk):
+    if request.user.role != "ADMIN":
+        return redirect('admin-dashboard')
+    
     try:
-        attendance = Attendance.objects.get(id=pk)
+        attendance = Attendance.objects.get(id = pk)
     except Attendance.DoesNotExist:
-        messages.error(request,"Record Not Found")
-        return  redirect('list-attendance')
+        messages.error(request, "Record Not Found")
+        return redirect('list-attendance')
     
     attendance.delete()
-    messages.success(request,"Delete Successfully")
+    messages.success(request, "Deleted Successfully")
     
     return redirect('list-attendance')

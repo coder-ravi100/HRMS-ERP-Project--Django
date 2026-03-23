@@ -50,11 +50,12 @@
                                                 <tbody>
                                                     {% for att in attendance %}
                                                     <tr>
-                                                        <td>{{att.id}}</td>
+                                                        <td>{{forloop.counter}}</td>
                                                         <td>{{att.employee.username}}</td>
                                                         <td>{{att.date}}</td>
-                                                        <td>{{att.check_in |default:'--'}}</td>
-                                                        <td>{{att.check_out|default:'--'}}</td>
+                                                        <td>{{att.check_in |default:'--'|time:"H:i"}}</td>
+                                                        <td>{{att.check_out|default:'--'|time:"H:i"}}</td>
+                                                        
                                                         <td>
                                                             {% if att.status == "Present" %}
                                                             <span class="badge badge-success fw-bold">Present</span>

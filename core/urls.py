@@ -46,7 +46,7 @@ urlpatterns = [
 
 
       
-      path('add_attendance/', views.add_attendance, name = 'add-attendance'),
+      # path('add_attendance/', views.add_attendance, name = 'add-attendance'),
       path('list_attendance/',  views.list_attendance, name='list-attendance'),
       path('edit_attendance/<int:pk>', views.edit_attendance, name='edit-attendance'),
       path('delete_attendance/<int:pk>',views.delete_attendance, name='delete-attendance'),
