@@ -11,6 +11,7 @@ from django.utils import timezone
 from datetime  import timedelta
 import random
 from .utils import *
+from django.utils.timezone import localtime
 
 # Create your views here.
 #---------------------------------------------------------
@@ -566,7 +567,49 @@ def update_leave_status(request,pk):
 
 #Employee Attendance Logic code
 def my_attendance(request):
-    return render(request,'attendance/My_attendance.html')
+    if request.user.role != "EMPLOYEE":
+        messages.error(request, "Only Employees Can Mark Attendance")
+        return redirect('employee-dashboard')
+   
+    user = request.user
+    today = localtime().date()
+    
+    #get today Records
+    attendance = Attendance.objects.filter(employee=user, date=today).first()
+
+    if request.method == "POST":
+        action = request.POST.get('action')
+
+        #check-in (only once per day)
+        if action == "checkin":
+            if attendance:
+                messages.warning(request, "You Can Mark Attendance  Only Once Per Day")
+            else:
+                Attendance.objects.create(
+                    employee=user,
+                    date=today,
+                    check_in = localtime().time(),
+                    status="Present"
+                )
+                messages.success(request, "Check-in Successful")
+        #Check-Out
+        elif  action == "checkout":
+            if not attendance:
+                messages.error(request, "You Must Check In First")
+            elif attendance.check_out:
+                messages.warning(request, "Already Checked Out")
+            else:
+                attendance.check_out = localtime().time()
+                attendance.save()
+                messages.success(request, "Check-Out Successful")
+        return redirect('my-attendance')
+    
+
+    context = {
+        'today_attendance' : attendance,
+        'today_date' : today
+    }
+    return render(request,'attendance/My_attendance.html',context)
 
 #--Curd For Employee By Admin 
 

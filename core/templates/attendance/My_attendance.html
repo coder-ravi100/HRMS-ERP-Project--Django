@@ -1,8 +1,8 @@
 {% extends 'dashboard/Employee_Dashboard.html' %}
 {% load static %}
 {% block mein %}
-<!-- [ Main Content ] start -->
-<div class="pcoded-main-container">
+ <!-- [ Main Content ] start -->
+ <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
@@ -27,122 +27,92 @@
                         <!-- [ breadcrumb ] end -->
                         <!-- [ Main Content ] start -->
                         <div class="row">
-                            
-                            <div class="col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-body">
+                            <!-- [ sample-page ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header card-body text-center">
+                                        <h5 class="mb-3">Mark Attendance</h5>
+                                        <p class="text-muted mb-3">{{ today_date }}</p>
 
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 class="mb-0">Today</h5>
-                                    <span class="badge bg-light text-dark">{{ today_date }}</span>
-                                </div>
+                                        {% if today_attendance.status == "Present" %}
+                                            <span class="badge badge-success px-4 py-2 rounded-pill">Present</span>
+                                        {% elif today_attendance.status == "Absent" %}
+                                            <span class="badge badge-danger px-4 py-2 rounded-pill">Absent</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary px-4 py-2 rounded-pill">Not Marked</span>
+                                        {% endif %}
+                                        </div>
 
-                                <hr>
+                                         <hr class="m-0">
 
-                                <div class="mb-3">
-                                    <span class="text-muted">Status</span><br>
+                                        <!-- TIME -->
+                                        <div class="card-body">
+                                        <div class="row text-center">
 
-                                    {% if today_attendance.status == "Present" %}
-                                    <span class="badge bg-success px-3 py-2">Present</span>
-                                    {% elif today_attendance.status == "Absent" %}
-                                    <span class="badge bg-danger px-3 py-2">Absent</span>
-                                    {% elif today_attendance.status == "Half Day" %}
-                                    <span class="badge bg-warning text-dark px-3 py-2">Half Day</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary px-3 py-2">Not Marked</span>
-                                    {% endif %}
-                                </div>
+                                            <div class="col-md-6 border-end">
+                                            <p class="text-muted mb-1">Check In</p>
+                                            <h4 class="fw-bold">
+                                                <span class="badge badge-info">
+                                                   {{ today_attendance.check_in|default:"--"|time:"H:i" }}
+                                                </span>
+                                            </h4>
+                                            </div>
 
-                                <div class="row text-center mt-4">
-                                    <div class="col-6">
-                                    <p class="text-muted mb-1">Check In</p>
-                                    <h6 class="fw-bold">
-                                        {{ today_attendance.check_in|default:"--" }}
-                                    </h6>
+                                            <div class="col-md-6">
+                                            <p class="text-muted mb-1">Check Out</p>
+                                            <h4 class="fw-bold">
+                                               <span class="badge badge-secondary">
+                                                {{ today_attendance.check_out|default:"--"|time:"H:i" }}
+                                               </span> 
+                                            </h4>
+                                            </div>
+
+                                        </div>
+                                        </div>
+
+                                        <hr class="m-0">
+
+                                        <!-- ACTION -->
+                                        <div class="card-body text-center">
+
+                                        
+
+                                        <form method="POST">
+                                            {% csrf_token %}
+
+                                            <div class="d-flex justify-content-center gap-3">
+
+                                            <button name="action" value="checkin"
+                                                class="btn btn-success px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+                                                <i class="bi bi-box-arrow-in-right"></i>
+                                                Check In
+                                            </button>
+
+                                            <button name="action" value="checkout"
+                                                class="btn btn-danger px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+                                                <i class="bi bi-box-arrow-right"></i>
+                                                Check Out
+                                            </button>
+
+                                            </div>
+                                        </form>
+
+                                        <!-- STATUS MSG -->
+                                        <div class="mt-3 text-muted">
+                                            {% if today_attendance.check_in and not today_attendance.check_out %}
+                                            Checked in at {{ today_attendance.check_in|time:"H:i" }}
+                                            {% elif today_attendance.check_out %}
+                                            Attendance completed
+                                            {% else %}
+                                            Not checked in today
+                                            {% endif %}
+                                        </div>
+
+                                        </div>
                                     </div>
-
-                                    <div class="col-6">
-                                    <p class="text-muted mb-1">Check Out</p>
-                                    <h6 class="fw-bold">
-                                        {{ today_attendance.check_out|default:"--" }}
-                                    </h6>
-                                    </div>
-                                </div>
-
                                 </div>
                             </div>
-                            </div>
-
-
-                            
-                            <div class="col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-body text-center d-flex flex-column justify-content-center">
-
-                                <h5 class="mb-4">Mark Attendance</h5>
-                                <form method="POST">
-                                    {% csrf_token %}
-                                  
-                                    <div class="d-flex justify-content-center gap-3">
-                                  
-                                      <button name="action" value="checkin"
-                                        class="btn btn-success px-4 py-2 d-flex align-items-center gap-2">
-                                        <i class="bi bi-box-arrow-in-right"></i>
-                                        <span>Check In</span>
-                                      </button>
-                                  
-                                      <button name="action" value="checkout"
-                                        class="btn btn-danger px-4 py-2 d-flex align-items-center gap-2">
-                                        <i class="bi bi-box-arrow-right"></i>
-                                        <span>Check Out</span>
-                                      </button>
-                                  
-                                    </div>
-                                  </form>
-                                <div class="mt-4 text-muted">
-                                    {% if today_attendance.check_in and not today_attendance.check_out %}
-                                    Checked in at {{ today_attendance.check_in }}
-                                    {% elif today_attendance.check_out %}
-                                    Attendance completed
-                                    {% else %}
-                                    Not checked in today
-                                    {% endif %}
-                                </div>
-
-                                </div>
-                            </div>
-                            </div>
-
-
-                           
-                            <div class="col-md-4">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                <p class="text-muted mb-1">Working Hours</p>
-                                <h5 class="fw-bold">--</h5>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div class="col-md-4">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                <p class="text-muted mb-1">Status</p>
-                                <h5 class="fw-bold">
-                                    {{ today_attendance.status|default:"--" }}
-                                </h5>
-                                </div>
-                            </div>
-                            </div>
-
-                            <div class="col-md-4">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                <p class="text-muted mb-1">Date</p>
-                                <h5 class="fw-bold">{{ today_date }}--</h5>
-                                </div>
-                            </div>
-                            </div>
+                            <!-- [ sample-page ] end -->
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>
