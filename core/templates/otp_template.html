@@ -1,25 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Password Reset</title>
 </head>
-<body>
-    <!-- <h3>Password Reset OTP</h3>
-    <p>Your OTP is: <b>{{ data.otp }}</b></p>
-    <p>Valid for 5 minutes.</p> -->
+<body style="margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, sans-serif;">
 
-    <div class="p-5 text-center bg-body-tertiary">
-        <div class="container py-5">
-          <h1 class="text-body-emphasis">Password Reset OTP</h1>
-          <p class="col-lg-8 mx-auto lead">
-            Your OTP Is :
-            <code>{{data.otp}}</code> 
-            <code>Valid For 5 minutes</code>
-          </p>
-          
-        </div>
-      </div>
+    <table width="100%" cellspacing="0" cellpadding="0" style="padding:30px 0;">
+        <tr>
+            <td align="center">
+
+                <table width="400" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:10px; padding:30px; box-shadow:0 5px 20px rgba(0,0,0,0.05);">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td align="center">
+                            <h2 style="margin:0; color:#333;">🔐 Password Reset</h2>
+                            <p style="color:#777; font-size:14px;">Use the OTP below to reset your password</p>
+                        </td>
+                    </tr>
+
+                    <!-- OTP BOX -->
+                    <tr>
+                        <td align="center" style="padding:20px 0;">
+                            <div style="font-size:32px; font-weight:bold; letter-spacing:5px; color:#ffffff; background:#4CAF50; padding:12px 25px; border-radius:8px; display:inline-block;">
+                                {{ data.otp }}
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- INFO -->
+                    <tr>
+                        <td align="center">
+                            <p style="margin:5px 0; color:#555; font-size:14px;">
+                                ⏳ Valid for 5 minutes
+                            </p>
+                            <p style="margin:5px 0; color:#999; font-size:13px;">
+                                Do not share this OTP with anyone
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- DIVIDER -->
+                    <tr>
+                        <td>
+                            <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td align="center">
+                            <p style="font-size:12px; color:#aaa;">
+                                If you didn’t request this, ignore this email.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>

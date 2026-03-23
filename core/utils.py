@@ -1,9 +1,12 @@
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.conf import settings
 
 def sendmailForOtp(subject, template, to, context):
 
+    print("Sending OTP To:",to)
+    
     template_str = template + '.html' 
 
     html_message = render_to_string(template_str, {'data': context})
@@ -11,4 +14,10 @@ def sendmailForOtp(subject, template, to, context):
 
     from_email = 'ravirathod100100@gmail.com'
 
-    send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    send_mail(
+        subject=subject,
+        message=plain_message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[to],
+        html_message=html_message,
+    )

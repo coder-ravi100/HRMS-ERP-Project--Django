@@ -12,6 +12,7 @@ from datetime  import timedelta
 import random
 from .utils import *
 from django.utils.timezone import localtime
+from .utils import sendmailForOtp
 
 # Create your views here.
 #---------------------------------------------------------
@@ -103,7 +104,9 @@ def forgot_password(request):
                 user.email,
                 {'otp': otp}
             )
-
+            print("INPUT EMAIL:", email)
+            print("USER FOUND:", user.username, user.email)
+            
             request.session['reset_email'] = email
 
             messages.success(request, "OTP sent")
@@ -130,28 +133,35 @@ def reset_password(request):
         try:
             user = User.objects.get(email=email)
 
-            #OTP expiry (5 min)
+            # OTP expiry (5 min)
             if not user.otp_created_at or user.otp_created_at < timezone.now() - timedelta(minutes=5):
                 messages.error(request, "OTP expired")
                 return redirect('forgot-password')
 
-            #OTP check
+            # attempts limit
+            user.otp_attempts += 1
+            if user.otp_attempts > 5:
+                messages.error(request, "Too many attempts")
+                return redirect('forgot-password')
+
+            # OTP match
             if str(user.otp) != otp:
+                user.save()
                 messages.error(request, "Invalid OTP")
                 return redirect('reset-password')
 
-            #password match
+            # password match
             if password != confirm_password:
                 messages.error(request, "Passwords do not match")
                 return redirect('reset-password')
 
-            #update password
+            # update password
             user.set_password(password)
             user.otp = None
             user.otp_created_at = None
+            user.otp_attempts = 0
             user.save()
 
-            #clear session
             request.session.pop('reset_email', None)
 
             messages.success(request, "Password reset successful")
@@ -160,9 +170,10 @@ def reset_password(request):
         except User.DoesNotExist:
             messages.error(request, "User not found")
             return redirect('forgot-password')
-
-    return render(request,'authentication/Reset_password.html',{'email' : email})
-
+    context = {
+        'email' : email
+    }
+    return render(request, 'authentication/Reset_password.html',context)
 
 
 #---------------------------------------------------------
@@ -679,5 +690,5 @@ def delete_attendance(request,pk):
     
     attendance.delete()
     messages.success(request, "Deleted Successfully")
-    
+
     return redirect('list-attendance')
