@@ -1,0 +1,182 @@
+{% extends 'dashboard/Employee_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+ <!-- [ Main Content ] start -->
+ <div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Sample Page</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                            <div class="row">
+
+                                <!-- LEFT SIDE -->
+                                <div class="col-md-4">
+                                  <div class="card text-center p-4">
+                              
+                                    {% if user.profile_pic %}
+                                      <img src="{{ user.profile_pic.url }}" class="rounded-circle mx-auto mb-3" width="120" height="120">
+                                    {% else %}
+                                      <img src="{% static 'images/default.png' %}"class="rounded-circle mx-auto mb-3" width="120" height="120">
+                                    {% endif %}
+                              
+                                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                                    <p class="text-muted">{{ user.role }}</p>
+                              
+                                    <div class="md-1">
+                                      <span class="badge badge-success fw-bold">
+                                          Active
+                                        </span>
+                                    </div>
+                              
+                                  </div>
+                                </div>
+                              
+                                <!-- RIGHT SIDE -->
+                                <div class="col-md-8">
+
+                                  <div class="card">
+                                
+                                    <!-- HEADER -->
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                      <h5 class="mb-0">Edit Profile</h5>
+                                
+                                      <a href="{% url 'employee-profile' %}" class="btn btn-sm btn-secondary">
+                                        Back
+                                      </a>
+                                    </div>
+                                
+                                    <div class="card-body">
+                                
+                                      <form method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                
+                                        <!-- PERSONAL INFO -->
+                                        <h6 class="mb-3 text-primary">Personal Information</h6>
+                                
+                                        <div class="row">
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>First Name</label>
+                                            <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Last Name</label>
+                                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Email</label>
+                                            <input type="email" name="email" value="{{ user.email }}" class="form-control">
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Phone</label>
+                                            <input type="text" name="phone" value="{{ user.phone }}" class="form-control">
+                                          </div>
+                                
+                                          <div class="col-md-12 mb-3">
+                                            <label>Address</label>
+                                            <textarea name="address" class="form-control" rows="2">{{ user.address }}</textarea>
+                                          </div>
+                                
+                                        </div>
+                                
+                                        <hr>
+                                
+                                        <!-- EXTRA INFO -->
+                                        <h6 class="mb-3 text-primary">Professional Info</h6>
+                                
+                                        <div class="row">
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Experience (Years)</label>
+                                            <input type="number" name="experience" value="{{ profile.experience }}" class="form-control">
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Profile Image</label>
+                                            <input type="file" name="profile_pic" class="form-control">
+                                          </div>
+                                
+                                        </div>
+                                
+                                        <hr>
+                                
+                                        <!-- READ ONLY -->
+                                        <h6 class="mb-3 text-primary">Job Details (Read Only)</h6>
+                                
+                                        <div class="row">
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Department</label>
+                                            <input type="text" value="{{ profile.department.name }}" class="form-control" disabled>
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Designation</label>
+                                            <input type="text" value="{{ profile.designation }}" class="form-control" disabled>
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Salary</label>
+                                            <input type="text" value="₹ {{ profile.salary }}" class="form-control" disabled>
+                                          </div>
+                                
+                                          <div class="col-md-6 mb-3">
+                                            <label>Joining Date</label>
+                                            <input type="text" value="{{ profile.join_date }}" class="form-control" disabled>
+                                          </div>
+                                
+                                        </div>
+                                
+                                        <!-- BUTTONS -->
+                                        <div class="d-flex justify-content-between mt-3">
+                                
+                                          <a href="{% url 'employee-profile' %}" class="btn btn-secondary">
+                                            Cancel
+                                          </a>
+                                
+                                          <input type="submit" class="btn btn-primary" value="Update Profile">
+                                
+                                        </div>
+                                
+                                      </form>
+                                
+                                    </div>
+                                
+                                  </div>
+                                
+                                </div>
+                              
+                            </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock %}
+  

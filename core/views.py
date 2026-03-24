@@ -405,6 +405,7 @@ def delete_employee(request,pk):
     return render(request,'employee/Employee_list.html',context)
 
 
+
 #---------------------------------------------------------
 #           ******TASKS SECTION******
 #---------------------------------------------------------
@@ -755,3 +756,57 @@ def admin_profile_edit(request):
             'user' : user
         }
     return render(request,'profile/Admin_profile_edit.html',context)
+
+
+
+@login_required
+def employee_profile(request):
+    user = request.user
+
+    if user.role != "EMPLOYEE":
+        return redirect('admin-dashboard')
+    
+    profile = EmployeeProfile.objects.filter(user=user).first()
+    
+    
+    context = {
+        'user' : user,
+        'profile' : profile
+    }
+    return render(request,'profile/Employee_profile.html',context)
+
+
+
+@login_required
+def employee_profile_edit(request):
+    user = request.user
+
+    if user.role != "EMPLOYEE":
+        return redirect('admin-dashboard')
+    
+    profile, created = EmployeeProfile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.phone = request.POST.get('phone')
+        user.address = request.POST.get('address')
+
+        profile.experience = request.POST.get('experience')
+
+       
+        if request.FILES.get('profile_pic'):
+            user.profile_pic = request.FILES.get('profile_pic')
+
+        user.save()
+        profile.save()
+
+        messages.success(request, 'Profile Updated Successfully')
+        return redirect('employee-profile')
+
+    context = {
+        'user' : user,
+        'profile' : profile
+    }
+    return render(request, 'profile/Employee_profile_edit.html',context)

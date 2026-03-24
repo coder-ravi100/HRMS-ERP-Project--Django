@@ -56,7 +56,9 @@ urlpatterns = [
 
 
       path('admin_profile/', views.admin_profile, name='admin-profile'),
-      path('admin_profile_edit/',views.admin_profile_edit, name='admin-profile-edit')
+      path('admin_profile_edit/',views.admin_profile_edit, name='admin-profile-edit'),
+      path('employee_profile/', views.employee_profile, name='employee-profile'),
+      path('employee_profile_edit/', views.employee_profile_edit, name='employee-profile-edit'),
 
 
 ]
