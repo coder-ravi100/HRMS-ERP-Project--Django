@@ -53,4 +53,10 @@ urlpatterns = [
       
       path('my_attendance/', views.my_attendance, name='my-attendance'),
 
+
+
+      path('admin_profile/', views.admin_profile, name='admin-profile'),
+      path('admin_profile_edit/',views.admin_profile_edit, name='admin-profile-edit')
+
+
 ]

@@ -1,0 +1,99 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Sample Page</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                              <div class="card">
+                          
+                                <div class="card-header">
+                                  <h5>Admin Profile</h5>
+                                </div>
+                          
+                                <div class="card-body">
+                          
+                                  <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                          
+                                    <div class="row">
+                          
+                                      <div class="col-md-6 mb-3">
+                                        <label>First Name</label>
+                                        <input type="text" name="first_name" 
+                                               value="{{ request.user.first_name }}" class="form-control">
+                                      </div>
+                          
+                                      <div class="col-md-6 mb-3">
+                                        <label>Last Name</label>
+                                        <input type="text" name="last_name" 
+                                               value="{{ request.user.last_name }}" class="form-control">
+                                      </div>
+                          
+                                      <div class="col-md-6 mb-3">
+                                        <label>Email</label>
+                                        <input type="email" name="email" 
+                                               value="{{ request.user.email }}" class="form-control">
+                                      </div>
+                                      
+                                      <div class="col-md-6 mb-3">
+                                        <label>Phone</label>
+                                        <input type="text" name="phone" 
+                                               value="{{ request.user.phone }}" class="form-control">
+                                      </div>
+                          
+                                      <div class="col-md-12 mb-3">
+                                        <label>Address</label>
+                                        <textarea name="address" class="form-control">
+                                        {{ request.user.address }}
+                                        </textarea>
+                                      </div>
+                          
+                                      <div class="col-md-12 mb-3">
+                                        <label>Profile Image</label>
+                                        <input type="file" name="profile_pic" class="form-control">
+                                      </div>
+                          
+                                    </div>
+                          
+                                    <input type="submit" class="btn btn-primary" value="Update Profile">
+                                      
+                                  </form>
+                          
+                                </div> <!-- card-body -->
+                          
+                              </div>
+                            </div>
+                          </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock %}

@@ -692,3 +692,66 @@ def delete_attendance(request,pk):
     messages.success(request, "Deleted Successfully")
 
     return redirect('list-attendance')
+
+
+@login_required
+def admin_profile(request):
+    user = request.user
+
+    if request.method == "POST":
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.phone = request.POST.get('phone')
+        user.address = request.POST.get('address')
+
+        if request.FILES.get('profile_pic'):
+            user.profile_pic = request.FILES.get('profile_pic')
+
+        user.save()
+        return redirect('admin-profile')
+    context = {
+        'user' : user
+    }
+    return render(request, 'profile/Admin_profile.html',context)
+
+
+@login_required
+def admin_profile_edit(request):
+    user = request.user
+    if user.role != "ADMIN":
+        return redirect('user-login')
+    
+    if request.method == "POST":
+       
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        
+        #Validation
+        if not first_name or not email:
+            messages.error(request,'First Name Email Required')
+            return redirect('admin-profile')
+        
+        #update Field
+        
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.phone = phone
+        user.address = address
+
+        #image Update
+        if request.FILES.get('profile_pic'):
+            user.profile_pic = request.FILES.get('profile_pic')
+
+            user.save()
+
+            messages.success(request, "Profile Updated Successfully")
+            return redirect('admin-profile')
+    context = {
+            'user' : user
+        }
+    return render(request,'profile/Admin_profile_edit.html',context)

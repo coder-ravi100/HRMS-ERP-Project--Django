@@ -1,0 +1,142 @@
+{% extends 'dashboard/Admin_Dashboard.html' %}
+{% load static %}
+{% block mein %}
+  <!-- [ Main Content ] start -->
+  <div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ breadcrumb ] start -->
+                        <div class="page-header">
+                            <div class="page-block">
+                                <div class="row align-items-center">
+                                    <div class="col-md-12">
+                                        <div class="page-header-title">
+                                            <h5 class="m-b-10">Sample Page</h5>
+                                        </div>
+                                        <ul class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="#!">Sample Page</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ breadcrumb ] end -->
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <!-- [ sample-page ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Hello card</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="card-body">
+                                            <div class="row">
+                                          
+                                              <!-- LEFT: PROFILE -->
+                                              <div class="col-md-4">
+                                                <div class="card text-center p-3">
+                                          
+                                                  {% if request.user.profile_pic %}
+                                                    <img src="{{ request.user.profile_pic.url }}" 
+                                                         class="rounded-circle mx-auto mb-3" width="120" height="120">
+                                                  {% else %}
+                                                    <img src="{% static 'images/default.png' %}" 
+                                                         class="rounded-circle mx-auto mb-3" width="120" height="120">
+                                                  {% endif %}
+                                          
+                                                  <h4 class="mb-1">
+                                                    {{ request.user.first_name }} {{ request.user.last_name }}
+                                                  </h4>
+                                          
+                                                  <p class="text-muted mb-2">{{ request.user.role }}</p>
+                                                  <div class="md-1">
+                                                    <span class="badge badge-success fw-bold">
+                                                        Active
+                                                      </span>
+                                                  </div>
+                                                  
+                                                  <div class="card-body">
+                                                    <div class="progress mb-4">
+                                                        <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                          
+                                                </div>
+                                              </div>
+                                          
+                                              <!-- RIGHT: DETAILS -->
+                                              <div class="col-md-8">
+                                                <div class="card p-4">
+                                          
+                                                  <h5 class="mb-4">Profile Details</h5>
+                                          
+                                                  <div class="row mb-3">
+                                                    <div class="col-sm-4"><strong>Email</strong></div>
+                                                    <div class="col-sm-8">{{ request.user.email }}</div>
+                                                  </div>
+                                          
+                                                  <div class="row mb-3">
+                                                    <div class="col-sm-4"><strong>Username</strong></div>
+                                                    <div class="col-sm-8"><span class="badge badge-danger">{{ request.user.username }}</span></div>
+                                                  </div>
+                                          
+                                                  <div class="row mb-3">
+                                                    <div class="col-sm-4"><strong>Role</strong></div>
+                                                    <div class="col-sm-8">{{ request.user.role }}</div>
+                                                  </div>
+                                          
+                                                  <div class="row mb-3">
+                                                    <div class="col-sm-4"><strong>Date Joined</strong></div>
+                                                    <div class="col-sm-8">
+                                                      {{ request.user.date_joined|date:"d M Y" }}
+                                                    </div>
+                                                  </div>
+                                          
+                                                  <div class="row mb-3">
+                                                    <div class="col-sm-4"><strong>Last Login</strong></div>
+                                                    <div class="col-sm-8">
+                                                      {{ request.user.last_login|date:"d M Y H:i" }}
+                                                    </div>
+                                                  </div>
+                                                  <div>
+                                                    <hr>
+                                                    <a href="{% url 'admin-profile-edit' %}" class="btn btn-primary">
+                                                        Edit Profile
+                                                      </a>
+                                                  </div>
+                                                  
+                                                </div>
+                                              </div>
+                                          
+                                            </div>
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ sample-page ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function(){
+        document.getElementById('preview').src = reader.result;
+      }
+      reader.readAsDataURL(event.target.files[0]);
+    }
+    </script>
+<!-- [ Main Content ] end -->
+{% endblock %}
