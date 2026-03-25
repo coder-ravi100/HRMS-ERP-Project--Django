@@ -17,6 +17,8 @@ class User(AbstractUser):
 
     email = models.EmailField(unique = True)
     
+    is_active = models.BooleanField(default=True)
+    
     profile_pic = models.ImageField(
         upload_to="profile_pics/",
         default="profile_pics/default.png",

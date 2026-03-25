@@ -56,8 +56,8 @@
                                                         <span class="badge badge-success">Approved</span>
                                                     {% elif l.status == "Rejected" %}
                                                         <span class="badge badge-danger">Rejected</span>
-                                                    {% else %}
-                                                        <span class="badge badge-warning text-dark">Pending</span>
+                                                    {% elif l.status == "Pending" %}
+                                                        <span class="badge badge-warning">Pending</span>
                                                     {% endif %}
                                                 </td>
 
@@ -69,6 +69,7 @@
                                                 
                                                         <select name="status"
                                                                 style="width:110px; height:32px; border-radius:5px; border:1px solid #ccc; font-size:13px;">
+                                                            <option value="Pending">Pending</option>
                                                             <option value="Approved">Approved</option>
                                                             <option value="Rejected">Rejected</option>
                                                         </select>

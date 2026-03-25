@@ -8,7 +8,7 @@ from .forms import * #RegistrationForm
 from .models import Department, EmployeeProfile, Task, Leave, Attendance
 from core.models import User
 from django.utils import timezone
-from datetime  import timedelta
+from datetime  import timedelta,date
 import random
 
 from .utils import *
@@ -23,86 +23,101 @@ from .utils import sendmailForOtp
 @never_cache
 @login_required
 def admin_dashboard(request):
-    if request.user.role != "ADMIN":
-        return redirect('employee-dashboard')
-    
-    today = now().date()
+     today = now().date()
+     last_7_days = today - timedelta(days=7)
 
-    # ================= KPI =================
-    total_employees = User.objects.filter(role="EMPLOYEE").count()
+    # ----------------------------
+    # TOP 4 CARDS
+    # ----------------------------
+     total_employees = User.objects.filter(role="EMPLOYEE").count()
 
-    present_today = Attendance.objects.filter(
-        date=today,
-        status="Present"
-    ).count()
+     present_today = Attendance.objects.filter(date=today, status="Present").count()
+     absent_today = Attendance.objects.filter(date=today, status="Absent").count()
 
-    on_leave = Leave.objects.filter(
-        status="Approved",
+     on_leave = Leave.objects.filter(
         start_date__lte=today,
-        end_date__gte=today
+        end_date__gte=today,
+        status="Approved"
     ).count()
 
-    pending_leaves = Leave.objects.filter(status="Pending").count()
+     pending_leaves = Leave.objects.filter(status="Pending").count()
 
+     present_percent = round((present_today / total_employees) * 100, 2) if total_employees else 0
 
-    # ================= ATTENDANCE TREND =================
-    last_7_days = []
-    for i in range(6, -1, -1):
-        day = today - timedelta(days=i)
-        count = Attendance.objects.filter(
-            date=day,
-            status="Present"
-        ).count()
+    # ----------------------------
+    # CARD 1 → LEAVES
+    # ----------------------------
+     total_leaves = Leave.objects.count()
+     approved_leaves = Leave.objects.filter(status="Approved").count()
 
-        last_7_days.append({
-            "day": day.strftime("%a"),
-            "present": count
-        })
+     leave_percent = round((on_leave / total_employees) * 100, 2) if total_employees else 0
+     approved_percent = round((approved_leaves / total_leaves) * 100, 2) if total_leaves else 0
+     pending_percent = round((pending_leaves / total_leaves) * 100, 2) if total_leaves else 0
 
+    # ----------------------------
+    # CARD 2 → WEEKLY ATTENDANCE
+    # ----------------------------
+     weekly_attendance = Attendance.objects.filter(date__gte=last_7_days)
 
-    # ================= TASK DONUT =================
-    task_data = [
-        {"label": "Pending", "value": Task.objects.filter(status="Pending").count()},
-        {"label": "In Progress", "value": Task.objects.filter(status="In Progress").count()},
-        {"label": "Completed", "value": Task.objects.filter(status="Completed").count()},
-    ]
+     total_week_records = weekly_attendance.count()
+     total_present_week = weekly_attendance.filter(status="Present").count()
+     weekly_absent = weekly_attendance.filter(status="Absent").count()
 
+     avg_attendance = round((total_present_week / total_week_records) * 100, 2) if total_week_records else 0
 
-    # ================= DEPARTMENT PERFORMANCE =================
-    departments = Department.objects.all()
-    dept_data = []
+    # Late logic (simple approx)
+     weekly_late = weekly_attendance.filter(check_in__gt="10:00:00").count()
 
-    for dept in departments:
-        employees = User.objects.filter(employeeprofile__department=dept)
+     late_percent = round((weekly_late / total_week_records) * 100, 2) if total_week_records else 0
+     absent_percent = round((weekly_absent / total_week_records) * 100, 2) if total_week_records else 0
 
-        total_tasks = Task.objects.filter(assigned_to__in=employees).count()
-        completed_tasks = Task.objects.filter(
-            assigned_to__in=employees,
-            status="Completed"
-        ).count()
+    # ----------------------------
+    # CARD 3 → EMPLOYEE STATS
+    # ----------------------------
+     new_hires = User.objects.filter(
+        role="EMPLOYEE",
+        date_joined__month=today.month
+      ).count()
 
-        percentage = 0
-        if total_tasks > 0:
-            percentage = int((completed_tasks / total_tasks) * 100)
+     active_employees = total_employees - absent_today
+     resigned_employees = 0 
 
-        dept_data.append({
-            "dept": dept.name,
-            "completed": percentage
-        })
+     active_percent = round((active_employees / total_employees) * 100, 2) if total_employees else 0
+     resigned_percent = 0
 
-
-    context = {
+    # ----------------------------
+    # CONTEXT
+    # ----------------------------
+     context = {
+        # top cards
         "total_employees": total_employees,
         "present_today": present_today,
         "on_leave": on_leave,
         "pending_leaves": pending_leaves,
+        "present_percent": present_percent,
 
-        "attendance_data": last_7_days,
-        "task_data": task_data,
-        "dept_data": dept_data,
+        # card 1
+        "total_leaves": total_leaves,
+        "approved_leaves": approved_leaves,
+        "leave_percent": leave_percent,
+        "approved_percent": approved_percent,
+        "pending_percent": pending_percent,
+
+        # card 2
+        "avg_attendance": avg_attendance,
+        "weekly_late": weekly_late,
+        "weekly_absent": weekly_absent,
+        "late_percent": late_percent,
+        "absent_percent": absent_percent,
+
+        # card 3
+        "new_hires": new_hires,
+        "active_employees": active_employees,
+        "resigned_employees": resigned_employees,
+        "active_percent": active_percent,
+        "resigned_percent": resigned_percent,
     }
-
-    return render(request,'dashboard/Admin_Dashboard.html',context)
+     return render(request,'dashboard/Admin_Dashboard.html',context)
 
 
 #---------------------------------------------------------
@@ -647,7 +662,7 @@ def update_leave_status(request,pk):
 
         status = request.POST.get('status')
 
-        if status in ["Approved", "Rejected"]:
+        if status in ["Pending","Approved", "Rejected"]:
             leave.status = status
             leave.save()
 

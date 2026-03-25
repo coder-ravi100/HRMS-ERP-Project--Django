@@ -312,7 +312,7 @@
 								</div>
 							</div>
 							<!-- [ breadcrumb ] end -->
-							<!-- [ Main Content ] start -->
+							
 							<div class="row">
 
 								<!-- Total Employees -->
@@ -396,62 +396,123 @@
 								</div>
 							
 							</div>
-							<!-- [ Main Content ] end -->
+
 							<div class="row">
-								
-								<!-- Attendance Trend -->
-								<div class="col-xl-8 col-md-12">
-									<div class="card shadow-sm border-0">
-										<div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-											<div>
-												<h5 class="mb-0">Attendance Overview</h5>
-												<small class="text-muted">Last 7 days employee presence</small>
+								<div class="col-md-12 col-xl-4">
+									<div class="card card-social">
+										<div class="card-block border-bottom">
+											<div class="row align-items-center justify-content-center">
+												<div class="col-auto">
+													<i class="fas fa-user-clock text-warning f-36"></i>
+												</div>
+												<div class="col text-right">
+													<h3>{{ total_leaves }}</h3>
+													<h5 class="text-warning mb-0">
+														{{ leave_percent }}% <span class="text-muted">On Leave</span>
+													</h5>
+												</div>
 											</div>
-											<span class="badge badge-success">Live</span>
 										</div>
-										<div class="card-body">
-											<div id="attendance-line-chart" style="height:300px;"></div>
+										<div class="card-block">
+											<div class="row align-items-center justify-content-center card-active">
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Approved:</span>{{ approved_leaves }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-success" style="width: 10%; height: 6px;" {{ approved_percent }}></div>
+													</div>
+												</div>
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Pending:</span>{{ pending_leaves }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-danger">{{ pending_percent }}</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
-							
-								<!-- Task Status -->
-								<div class="col-xl-4 col-md-12">
-									<div class="card shadow-sm border-0">
-										<div class="card-header bg-white border-0">
-											<h5 class="mb-0">Task Status</h5>
-											<small class="text-muted">Current distribution</small>
+
+								<div class="col-md-6 col-xl-4">
+									<div class="card card-social">
+										<div class="card-block border-bottom">
+											<div class="row align-items-center justify-content-center">
+												<div class="col-auto">
+													<i class="fas fa-calendar-check text-success f-36"></i>
+												</div>
+												<div class="col text-right">
+													<h3>{{ avg_attendance }}%</h3>
+													<h5 class="text-success mb-0">
+														Weekly Avg <span class="text-muted">Attendance</span>
+													</h5>
+												</div>
+											</div>
 										</div>
-										<div class="card-body text-center">
-											<div id="task-donut-chart" style="height:260px;"></div>
-							
-											<!-- Legend -->
-											<div class="mt-3">
-												<span class="badge badge-warning mr-2">Pending</span>
-												<span class="badge badge-primary mr-2">In Progress</span>
-												<span class="badge badge-success">Completed</span>
+										<div class="card-block">
+											<div class="row align-items-center justify-content-center card-active">
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Late (7d):</span>{{ weekly_late }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-warning" style="width: 10%; height: 6px;" {{ late_percent }}></div>
+													</div>
+												</div>
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Absent (7d):</span>{{ weekly_absent }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-danger">{{ absent_percent }}</div>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							
-								<!-- Department Performance -->
-								<div class="col-xl-12">
-									<div class="card shadow-sm border-0">
-										<div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
-											<div>
-												<h5 class="mb-0">Department Performance</h5>
-												<small class="text-muted">Task completion by department</small>
+
+								<div class="col-md-6 col-xl-4">
+									<div class="card card-social">
+										<div class="card-block border-bottom">
+											<div class="row align-items-center justify-content-center">
+												<div class="col-auto">
+													<i class="fas fa-user-plus text-primary f-36"></i>
+												</div>
+												<div class="col text-right">
+													<h3>{{ new_hires }}</h3>
+													<h5 class="text-primary mb-0">
+														This Month <span class="text-muted">New Joins</span>
+													</h5>
+												</div>
 											</div>
 										</div>
-										<div class="card-body">
-											<div id="department-bar-chart" style="height:300px;"></div>
+										<div class="card-block">
+											<div class="row align-items-center justify-content-center card-active">
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Active:</span>{{ active_employees }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-success">{{ active_percent }}</div>
+													</div>
+												</div>
+												<div class="col-6">
+													<h6 class="text-center m-b-10">
+														<span class="text-muted m-r-5">Resigned:</span>{{ resigned_employees }}
+													</h6>
+													<div class="progress">
+														<div class="progress-bar bg-danger" style="width: 10%; height: 6px;" {{ resigned_percent }}></div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
-							
 							</div>
-							<!-- [ Main Content ] end-->
+							
 						</div>
 					</div>
 				</div>
@@ -466,89 +527,7 @@
 	<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'assets/js/pcoded.min.js' %}"></script>
 
-
-	 <!-- chart-morris Js -->
-	 <script src="{% static 'assets/plugins/chart-morris/js/raphael.min.js' %}"></script>
-	 <script src="{% static 'assets/plugins/chart-morris/js/morris.min.js' %}"></script>
-	 <script src="{% static 'assets/js/pages/chart-morris-custom.js' %}"></script>
 	
-	
-		<script>
-			'use strict';
-			$(document).ready(function () {
-
-    		setTimeout(function () {
-
-        // =========================
-        // 1. ATTENDANCE TREND (LINE)
-        // =========================
-        Morris.Line({
-            element: 'attendance-line-chart',
-            data: [
-                { day: 'Mon', present: 45 },
-                { day: 'Tue', present: 50 },
-                { day: 'Wed', present: 48 },
-                { day: 'Thu', present: 60 },
-                { day: 'Fri', present: 55 },
-                { day: 'Sat', present: 40 },
-                { day: 'Sun', present: 20 }
-            ],
-            xkey: 'day',
-            ykeys: ['present'],
-            labels: ['Present Employees'],
-            lineColors: ['#2ca961'],
-            resize: true,
-            hideHover: 'auto'
-        });
-
-
-        // =========================
-        // 2. DEPARTMENT PERFORMANCE (BAR)
-        // =========================
-        Morris.Bar({
-            element: 'department-bar-chart',
-            data: [
-                { dept: 'HR', completed: 80 },
-                { dept: 'IT', completed: 65 },
-                { dept: 'Sales', completed: 90 },
-                { dept: 'Support', completed: 70 }
-            ],
-            xkey: 'dept',
-            ykeys: ['completed'],
-            labels: ['Task Completion %'],
-            barColors: ['#3949AB'],
-            resize: true
-        });
-
-
-        // =========================
-        // 3. TASK STATUS (DONUT)
-        // =========================
-        Morris.Donut({
-            element: 'task-donut-chart',
-            data: [
-                { label: 'Pending', value: 12 },
-                { label: 'In Progress', value: 25 },
-                { label: 'Completed', value: 40 }
-            ],
-            // colors: ['#f57c00', '#3949AB', '#2ca961'],
-			colors: [
-                '#3949AB',
-                '#463699',
-                '#e52d27',
-                '#f57c00',
-            ],
-            resize: true,
-            formatter: function (x) {
-                return x + " Tasks"
-            }
-        	});
-
-    	}, 500);
-
-		})	;
-		
-		</script>
 
 </body>
 
