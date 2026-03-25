@@ -10,8 +10,10 @@ from core.models import User
 from django.utils import timezone
 from datetime  import timedelta
 import random
+
 from .utils import *
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime,now
+from django.db.models  import Count
 from .utils import sendmailForOtp
 
 # Create your views here.
@@ -23,7 +25,84 @@ from .utils import sendmailForOtp
 def admin_dashboard(request):
     if request.user.role != "ADMIN":
         return redirect('employee-dashboard')
-    return render(request,'dashboard/Admin_Dashboard.html')
+    
+    today = now().date()
+
+    # ================= KPI =================
+    total_employees = User.objects.filter(role="EMPLOYEE").count()
+
+    present_today = Attendance.objects.filter(
+        date=today,
+        status="Present"
+    ).count()
+
+    on_leave = Leave.objects.filter(
+        status="Approved",
+        start_date__lte=today,
+        end_date__gte=today
+    ).count()
+
+    pending_leaves = Leave.objects.filter(status="Pending").count()
+
+
+    # ================= ATTENDANCE TREND =================
+    last_7_days = []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        count = Attendance.objects.filter(
+            date=day,
+            status="Present"
+        ).count()
+
+        last_7_days.append({
+            "day": day.strftime("%a"),
+            "present": count
+        })
+
+
+    # ================= TASK DONUT =================
+    task_data = [
+        {"label": "Pending", "value": Task.objects.filter(status="Pending").count()},
+        {"label": "In Progress", "value": Task.objects.filter(status="In Progress").count()},
+        {"label": "Completed", "value": Task.objects.filter(status="Completed").count()},
+    ]
+
+
+    # ================= DEPARTMENT PERFORMANCE =================
+    departments = Department.objects.all()
+    dept_data = []
+
+    for dept in departments:
+        employees = User.objects.filter(employeeprofile__department=dept)
+
+        total_tasks = Task.objects.filter(assigned_to__in=employees).count()
+        completed_tasks = Task.objects.filter(
+            assigned_to__in=employees,
+            status="Completed"
+        ).count()
+
+        percentage = 0
+        if total_tasks > 0:
+            percentage = int((completed_tasks / total_tasks) * 100)
+
+        dept_data.append({
+            "dept": dept.name,
+            "completed": percentage
+        })
+
+
+    context = {
+        "total_employees": total_employees,
+        "present_today": present_today,
+        "on_leave": on_leave,
+        "pending_leaves": pending_leaves,
+
+        "attendance_data": last_7_days,
+        "task_data": task_data,
+        "dept_data": dept_data,
+    }
+
+    return render(request,'dashboard/Admin_Dashboard.html',context)
 
 
 #---------------------------------------------------------
@@ -562,14 +641,17 @@ def update_leave_status(request,pk):
     
     if request.method == "POST":
         try:
-            task = Task.objects.get(id=pk)
-        except Task.DoesNotExist:
-            return redirect('task-list')  
+            leave = Leave.objects.get(id=pk)
+        except Leave.DoesNotExist:
+            return redirect('leave-list')  
 
-        task.status = request.POST.get('status')
-        task.save()
+        status = request.POST.get('status')
 
-    return redirect('task-list')
+        if status in ["Approved", "Rejected"]:
+            leave.status = status
+            leave.save()
+
+    return redirect('leave-list')
 
 
 

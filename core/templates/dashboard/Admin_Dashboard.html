@@ -315,75 +315,143 @@
 							<!-- [ Main Content ] start -->
 							<div class="row">
 
-								<!-- product profit start -->
-								<div class="col-xl-3 col-md-6">
-									<div class="card prod-p-card bg-c-red">
-										<div class="card-body">
-											<div class="row align-items-center m-b-25">
-												<div class="col">
-													<h6 class="m-b-5 text-white">Total Profit</h6>
-													<h3 class="m-b-0 text-white">$1,783</h3>
-												</div>
-												<div class="col-auto">
-													<i class="fas fa-money-bill-alt text-c-red f-18"></i>
-												</div>
-											</div>
-											<p class="m-b-0 text-white"><span class="label label-danger m-r-10">+11%</span>From Previous Month</p>
-										</div>
-									</div>
-								</div>
+								<!-- Total Employees -->
 								<div class="col-xl-3 col-md-6">
 									<div class="card prod-p-card bg-c-blue">
 										<div class="card-body">
 											<div class="row align-items-center m-b-25">
 												<div class="col">
-													<h6 class="m-b-5 text-white">Total Orders</h6>
-													<h3 class="m-b-0 text-white">15,830</h3>
+													<h6 class="m-b-5 text-white">Total Employees</h6>
+													<h3 class="m-b-0 text-white">{{ total_employees }}</h3>
 												</div>
 												<div class="col-auto">
-													<i class="fas fa-database text-c-blue f-18"></i>
+													<i class="fas fa-users text-c-blue f-18"></i>
 												</div>
 											</div>
-											<p class="m-b-0 text-white"><span class="label label-primary m-r-10">+12%</span>From Previous Month</p>
+											<p class="m-b-0 text-white">
+												<span class="label label-primary m-r-10">Active</span>Company Workforce
+											</p>
 										</div>
 									</div>
 								</div>
+							
+								<!-- Present Today -->
 								<div class="col-xl-3 col-md-6">
 									<div class="card prod-p-card bg-c-green">
 										<div class="card-body">
 											<div class="row align-items-center m-b-25">
 												<div class="col">
-													<h6 class="m-b-5 text-white">Average Price</h6>
-													<h3 class="m-b-0 text-white">$6,780</h3>
+													<h6 class="m-b-5 text-white">Present Today</h6>
+													<h3 class="m-b-0 text-white">{{ present_today }}</h3>
 												</div>
 												<div class="col-auto">
-													<i class="fas fa-dollar-sign text-c-green f-18"></i>
+													<i class="fas fa-user-check text-c-green f-18"></i>
 												</div>
 											</div>
-											<p class="m-b-0 text-white"><span class="label label-success m-r-10">+52%</span>From Previous Month</p>
+											<p class="m-b-0 text-white">
+												<span class="label label-success m-r-10">+{{ present_percent }}%</span>Attendance Rate
+											</p>
 										</div>
 									</div>
 								</div>
+							
+								<!-- On Leave -->
 								<div class="col-xl-3 col-md-6">
 									<div class="card prod-p-card bg-c-yellow">
 										<div class="card-body">
 											<div class="row align-items-center m-b-25">
 												<div class="col">
-													<h6 class="m-b-5 text-white">Product Sold</h6>
-													<h3 class="m-b-0 text-white">6,784</h3>
+													<h6 class="m-b-5 text-white">On Leave</h6>
+													<h3 class="m-b-0 text-white">{{ on_leave }}</h3>
 												</div>
 												<div class="col-auto">
-													<i class="fas fa-tags text-c-yellow f-18"></i>
+													<i class="fas fa-user-clock text-c-yellow f-18"></i>
 												</div>
 											</div>
-											<p class="m-b-0 text-white"><span class="label label-warning m-r-10">+52%</span>From Previous Month</p>
+											<p class="m-b-0 text-white">
+												<span class="label label-warning m-r-10">Today</span>Leave Requests
+											</p>
 										</div>
 									</div>
 								</div>
-								<!--Start Content-->
+							
+								<!-- Pending Leaves -->
+								<div class="col-xl-3 col-md-6">
+									<div class="card prod-p-card bg-c-red">
+										<div class="card-body">
+											<div class="row align-items-center m-b-25">
+												<div class="col">
+													<h6 class="m-b-5 text-white">Pending Approvals</h6>
+													<h3 class="m-b-0 text-white">{{ pending_leaves }}</h3>
+												</div>
+												<div class="col-auto">
+													<i class="fas fa-hourglass-half text-c-red f-18"></i>
+												</div>
+											</div>
+											<p class="m-b-0 text-white">
+												<span class="label label-danger m-r-10">Action Needed</span>Review Requests
+											</p>
+										</div>
+									</div>
+								</div>
+							
 							</div>
-
 							<!-- [ Main Content ] end -->
+							<div class="row">
+								
+								<!-- Attendance Trend -->
+								<div class="col-xl-8 col-md-12">
+									<div class="card shadow-sm border-0">
+										<div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+											<div>
+												<h5 class="mb-0">Attendance Overview</h5>
+												<small class="text-muted">Last 7 days employee presence</small>
+											</div>
+											<span class="badge badge-success">Live</span>
+										</div>
+										<div class="card-body">
+											<div id="attendance-line-chart" style="height:300px;"></div>
+										</div>
+									</div>
+								</div>
+							
+								<!-- Task Status -->
+								<div class="col-xl-4 col-md-12">
+									<div class="card shadow-sm border-0">
+										<div class="card-header bg-white border-0">
+											<h5 class="mb-0">Task Status</h5>
+											<small class="text-muted">Current distribution</small>
+										</div>
+										<div class="card-body text-center">
+											<div id="task-donut-chart" style="height:260px;"></div>
+							
+											<!-- Legend -->
+											<div class="mt-3">
+												<span class="badge badge-warning mr-2">Pending</span>
+												<span class="badge badge-primary mr-2">In Progress</span>
+												<span class="badge badge-success">Completed</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							
+								<!-- Department Performance -->
+								<div class="col-xl-12">
+									<div class="card shadow-sm border-0">
+										<div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+											<div>
+												<h5 class="mb-0">Department Performance</h5>
+												<small class="text-muted">Task completion by department</small>
+											</div>
+										</div>
+										<div class="card-body">
+											<div id="department-bar-chart" style="height:300px;"></div>
+										</div>
+									</div>
+								</div>
+							
+							</div>
+							<!-- [ Main Content ] end-->
 						</div>
 					</div>
 				</div>
@@ -397,6 +465,90 @@
 	<script src="{% static 'assets/js/vendor-all.min.js' %}"></script>
 	<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'assets/js/pcoded.min.js' %}"></script>
+
+
+	 <!-- chart-morris Js -->
+	 <script src="{% static 'assets/plugins/chart-morris/js/raphael.min.js' %}"></script>
+	 <script src="{% static 'assets/plugins/chart-morris/js/morris.min.js' %}"></script>
+	 <script src="{% static 'assets/js/pages/chart-morris-custom.js' %}"></script>
+	
+	
+		<script>
+			'use strict';
+			$(document).ready(function () {
+
+    		setTimeout(function () {
+
+        // =========================
+        // 1. ATTENDANCE TREND (LINE)
+        // =========================
+        Morris.Line({
+            element: 'attendance-line-chart',
+            data: [
+                { day: 'Mon', present: 45 },
+                { day: 'Tue', present: 50 },
+                { day: 'Wed', present: 48 },
+                { day: 'Thu', present: 60 },
+                { day: 'Fri', present: 55 },
+                { day: 'Sat', present: 40 },
+                { day: 'Sun', present: 20 }
+            ],
+            xkey: 'day',
+            ykeys: ['present'],
+            labels: ['Present Employees'],
+            lineColors: ['#2ca961'],
+            resize: true,
+            hideHover: 'auto'
+        });
+
+
+        // =========================
+        // 2. DEPARTMENT PERFORMANCE (BAR)
+        // =========================
+        Morris.Bar({
+            element: 'department-bar-chart',
+            data: [
+                { dept: 'HR', completed: 80 },
+                { dept: 'IT', completed: 65 },
+                { dept: 'Sales', completed: 90 },
+                { dept: 'Support', completed: 70 }
+            ],
+            xkey: 'dept',
+            ykeys: ['completed'],
+            labels: ['Task Completion %'],
+            barColors: ['#3949AB'],
+            resize: true
+        });
+
+
+        // =========================
+        // 3. TASK STATUS (DONUT)
+        // =========================
+        Morris.Donut({
+            element: 'task-donut-chart',
+            data: [
+                { label: 'Pending', value: 12 },
+                { label: 'In Progress', value: 25 },
+                { label: 'Completed', value: 40 }
+            ],
+            // colors: ['#f57c00', '#3949AB', '#2ca961'],
+			colors: [
+                '#3949AB',
+                '#463699',
+                '#e52d27',
+                '#f57c00',
+            ],
+            resize: true,
+            formatter: function (x) {
+                return x + " Tasks"
+            }
+        	});
+
+    	}, 500);
+
+		})	;
+		
+		</script>
 
 </body>
 
