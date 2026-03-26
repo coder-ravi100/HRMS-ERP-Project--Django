@@ -15,6 +15,7 @@ from .utils import *
 from django.utils.timezone import localtime,now
 from django.db.models  import Count
 from .utils import sendmailForOtp
+import json
 
 # Create your views here.
 #---------------------------------------------------------
@@ -23,100 +24,57 @@ from .utils import sendmailForOtp
 @never_cache
 @login_required
 def admin_dashboard(request):
-     today = now().date()
-     last_7_days = today - timedelta(days=7)
+     today = date.today()
+     week_ago = today - timedelta(days=7)
 
-    # ----------------------------
-    # TOP 4 CARDS
-    # ----------------------------
+    # CARDS DATA
      total_employees = User.objects.filter(role="EMPLOYEE").count()
+     total_departments = Department.objects.count()
+     present_today = Attendance.objects.filter(date=today, status="PRESENT").count()
+     pending_tasks = Task.objects.filter(status="PENDING").count()
 
-     present_today = Attendance.objects.filter(date=today, status="Present").count()
-     absent_today = Attendance.objects.filter(date=today, status="Absent").count()
+    # LINE CHART (Attendance Trend - last 7 days)
+     attendance_data = []
+     for i in range(7):
+        day = today - timedelta(days=i)
+        count = Attendance.objects.filter(date=day, status="PRESENT").count()
+        attendance_data.append({
+            "y": day.strftime("%a"),
+            "present": count
+        })
+     attendance_data = attendance_data[::-1]
 
-     on_leave = Leave.objects.filter(
-        start_date__lte=today,
-        end_date__gte=today,
-        status="Approved"
-    ).count()
+    # DONUT (Department Distribution)
+     dept_data = Department.objects.annotate(total=Count('employeeprofile')).values('name', 'total')
+     donut_data = [{"label": d["name"], "value": d["total"]} for d in dept_data]
 
-     pending_leaves = Leave.objects.filter(status="Pending").count()
+    # STACKED (Tasks)
+     task_data = []
+     for i in range(7):
+        day = today - timedelta(days=i)
+        completed = Task.objects.filter(created_at__date=day, status="COMPLETED").count()
+        pending = Task.objects.filter(created_at__date=day, status="PENDING").count()
 
-     present_percent = round((present_today / total_employees) * 100, 2) if total_employees else 0
+        task_data.append({
+            "y": day.strftime("%a"),
+            "completed": completed,
+            "pending": pending
+        })
+     task_data = task_data[::-1]
 
-    # ----------------------------
-    # CARD 1 → LEAVES
-    # ----------------------------
-     total_leaves = Leave.objects.count()
-     approved_leaves = Leave.objects.filter(status="Approved").count()
-
-     leave_percent = round((on_leave / total_employees) * 100, 2) if total_employees else 0
-     approved_percent = round((approved_leaves / total_leaves) * 100, 2) if total_leaves else 0
-     pending_percent = round((pending_leaves / total_leaves) * 100, 2) if total_leaves else 0
-
-    # ----------------------------
-    # CARD 2 → WEEKLY ATTENDANCE
-    # ----------------------------
-     weekly_attendance = Attendance.objects.filter(date__gte=last_7_days)
-
-     total_week_records = weekly_attendance.count()
-     total_present_week = weekly_attendance.filter(status="Present").count()
-     weekly_absent = weekly_attendance.filter(status="Absent").count()
-
-     avg_attendance = round((total_present_week / total_week_records) * 100, 2) if total_week_records else 0
-
-    # Late logic (simple approx)
-     weekly_late = weekly_attendance.filter(check_in__gt="10:00:00").count()
-
-     late_percent = round((weekly_late / total_week_records) * 100, 2) if total_week_records else 0
-     absent_percent = round((weekly_absent / total_week_records) * 100, 2) if total_week_records else 0
-
-    # ----------------------------
-    # CARD 3 → EMPLOYEE STATS
-    # ----------------------------
-     new_hires = User.objects.filter(
-        role="EMPLOYEE",
-        date_joined__month=today.month
-      ).count()
-
-     active_employees = total_employees - absent_today
-     resigned_employees = 0 
-
-     active_percent = round((active_employees / total_employees) * 100, 2) if total_employees else 0
-     resigned_percent = 0
-
-    # ----------------------------
-    # CONTEXT
-    # ----------------------------
      context = {
-        # top cards
         "total_employees": total_employees,
+        "total_departments": total_departments,
         "present_today": present_today,
-        "on_leave": on_leave,
-        "pending_leaves": pending_leaves,
-        "present_percent": present_percent,
-
-        # card 1
-        "total_leaves": total_leaves,
-        "approved_leaves": approved_leaves,
-        "leave_percent": leave_percent,
-        "approved_percent": approved_percent,
-        "pending_percent": pending_percent,
-
-        # card 2
-        "avg_attendance": avg_attendance,
-        "weekly_late": weekly_late,
-        "weekly_absent": weekly_absent,
-        "late_percent": late_percent,
-        "absent_percent": absent_percent,
-
-        # card 3
-        "new_hires": new_hires,
-        "active_employees": active_employees,
-        "resigned_employees": resigned_employees,
-        "active_percent": active_percent,
-        "resigned_percent": resigned_percent,
-    }
+        "pending_tasks": pending_tasks,
+        "attendance_data": attendance_data,
+        "donut_data": donut_data,
+        "task_data": task_data,
+        "attendance_data": json.dumps(attendance_data),
+        "donut_data": json.dumps(donut_data),
+        "task_data": json.dumps(task_data),
+        "activity_level" : 85
+     }
      return render(request,'dashboard/Admin_Dashboard.html',context)
 
 
@@ -791,7 +749,9 @@ def delete_attendance(request,pk):
 
     return redirect('list-attendance')
 
-
+#---------------------------------------------------------
+#           ******ADMIN PROFILE SECTION******
+#---------------------------------------------------------
 @login_required
 def admin_profile(request):
     user = request.user
@@ -855,7 +815,9 @@ def admin_profile_edit(request):
     return render(request,'profile/Admin_profile_edit.html',context)
 
 
-
+#---------------------------------------------------------
+#           ******EMPLOYEE PROFILE SECTION******
+#---------------------------------------------------------
 @login_required
 def employee_profile(request):
     user = request.user
