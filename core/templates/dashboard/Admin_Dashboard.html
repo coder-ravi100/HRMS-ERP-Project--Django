@@ -338,7 +338,7 @@
 										<div class="card-body">
 											<div class="row align-items-center m-b-25">
 												<div class="col">
-													<h6 class="m-b-5 text-white">Total Department</h6>
+													<h6 class="m-b-5 text-white">Department</h6>
 													<h3 class="m-b-0 text-white">{{total_departments}}</h3>
 												</div>
 												<div class="col-auto">
@@ -416,7 +416,7 @@
 								 <div class="col-xl-8">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5>Employees by Department</h5>
+                                            <h5>Attendance Trend (Last 7 Days)</h5>
                                         </div>
                                         <div class="card-body">
                                             <div id="morris-line-smooth-chart" class="ChartShadow" style="height:300px"></div>
@@ -518,14 +518,16 @@
 		var donutData = JSON.parse('{{ donut_data|escapejs }}');
 		var taskData = JSON.parse('{{ task_data|escapejs }}');
 		
+		console.log(attendanceData);
 		// console.log(attendanceData);  
 		</script>
 	 
 	 <script>
+		// [ line-smooth-chart ] start
 		'use strict';
-		
-        // [ line-smooth-chart ] start
-        Morris.Line({
+		$(document).ready(function (){
+		if (document.getElementById('morris-line-smooth-chart') && typeof  attendanceData !==  "undefined") {
+		Morris.Line({
 		element: 'morris-line-smooth-chart',
 		data: attendanceData,
 		xkey: 'y',
@@ -534,14 +536,21 @@
 		ykeys: ['present'],
 		hideHover: 'auto',
 		responsive: true,
+		resize:true,
 		labels: ['Present'],
+		ymin:0,
+		ymax:10,
+		parse:false,
 		lineColors: ['#2ca961']
+		});
+	   }        
 	});
         // [ line-smooth-chart ] end
 
 
         // [ bar-stacked ] chart start
-        Morris.Bar({
+		if (document.getElementById('morris-bar-stacked-chart') && typeof taskData !== "undefined") {
+        	Morris.Bar({
             element: 'morris-bar-stacked-chart',
             data: taskData,
             xkey: 'y',
@@ -554,10 +563,12 @@
             labels: ['Completed', 'Pending'],
             barColors: ['#2ca961', '#e52d27']
         });
+	}
         // [ bar-stacked ] chart end
 
         
         // [ Donut-chart ] Start
+		if (document.getElementById('morris-donut-chart') && typeof donutData !== "undefined") {
         var graph = Morris.Donut({
             element: 'morris-donut-chart',
             data: donutData,
@@ -565,10 +576,14 @@
 			'#3949AB', 
 			'#2ca961', 
 			'#f57c00', 
-			'#e52d27'
+			'#e52d27',
+			// '#3949AB',
+			// '#463699',
+			// '#e52d27',
+			// '#f57c00'
             ],
-           
         });
+	}
     // [ Donut-chart ] end
 
 	 </script>

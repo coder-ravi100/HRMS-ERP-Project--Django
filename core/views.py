@@ -30,14 +30,16 @@ def admin_dashboard(request):
     # CARDS DATA
      total_employees = User.objects.filter(role="EMPLOYEE").count()
      total_departments = Department.objects.count()
-     present_today = Attendance.objects.filter(date=today, status="PRESENT").count()
-     pending_tasks = Task.objects.filter(status="PENDING").count()
+     present_today = Attendance.objects.filter(date=today, status="Present").count()
+     pending_tasks = Task.objects.filter(status="Pending").count()
 
     # LINE CHART (Attendance Trend - last 7 days)
      attendance_data = []
      for i in range(7):
         day = today - timedelta(days=i)
-        count = Attendance.objects.filter(date=day, status="PRESENT").count()
+        
+        count = Attendance.objects.filter(date=day, status="Present").count() or 0
+        
         attendance_data.append({
             "y": day.strftime("%a"),
             "present": count
@@ -52,8 +54,8 @@ def admin_dashboard(request):
      task_data = []
      for i in range(7):
         day = today - timedelta(days=i)
-        completed = Task.objects.filter(created_at__date=day, status="COMPLETED").count()
-        pending = Task.objects.filter(created_at__date=day, status="PENDING").count()
+        completed = Task.objects.filter(created_at__date=day, status="Completed").count()
+        pending = Task.objects.filter(created_at__date=day, status="Pending").count()
 
         task_data.append({
             "y": day.strftime("%a"),
