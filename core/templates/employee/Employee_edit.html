@@ -17,7 +17,7 @@
                                             <h5 class="m-b-10">Employyee</h5>
                                         </div>
                                         <ul class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="{% url 'admin-dashboard' %}"><i class="feather icon-home"></i></a></li>
                                             <li class="breadcrumb-item"><a href="#!">Edit Employee</a></li>
                                         </ul>
                                     </div>
@@ -32,12 +32,12 @@
                                 <div class="card">
                                 
                                     <div class="card-header">
-                                    <h5>Create Employee</h5>
+                                    <h5>Update Employee</h5>
                                     </div>
                                 
                                 <div class="card-body">
                                 
-                                    <form method="POST" action="{% url 'edit-employee' emp_id.id%}" enctype="multipart/form-data">
+                                    <form method="POST" action="{% url 'edit-employee' emp.id %}" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     
                                         <div class="row">
@@ -55,7 +55,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>First name</label>
-                                                <input type="text" name="first_name" class="form-control" placeholder="Enter first name" required value="{{emp_id.user.first_name}}">
+                                                <input type="text" name="first_name" class="form-control" placeholder="Enter first name" required value="{{emp.user.first_name}}">
                                                 </div>
                                             </div>
                                             
@@ -63,7 +63,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Last name</label>
-                                                <input type="text" name="last_name" class="form-control" placeholder="Enter Last Name" required value="{{emp_id.user.last_name}}">
+                                                <input type="text" name="last_name" class="form-control" placeholder="Enter Last Name" required value="{{emp.user.last_name}}">
                                                 </div>
                                             </div>
                                             
@@ -71,7 +71,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Email</label>
-                                                <input type="email" name="email" class="form-control" placeholder="Enter email" required value="{{emp_id.user.email}}">
+                                                <input type="email" name="email" class="form-control" placeholder="Enter email" required value="{{emp.user.email}}">
                                                 </div>
                                             </div>
 
@@ -79,8 +79,8 @@
                                             <div class="col-md-6">
                                                 <label>Role</label>
                                                 <select name="role" class="form-control">
-                                                    <option value="ADMIN" {% if emp_id.user.role == "ADMIN" %}selected{% endif %}>Admin</option>
-                                                    <option value="EMPLOYEE" {% if emp_id.user.role == "EMPLOYEE" %}selected{% endif %}>Employee</option>
+                                                    <option value="ADMIN" {% if emp.user.role == "ADMIN" %}selected{% endif %}>Admin</option>
+                                                    <option value="EMPLOYEE" {% if emp.user.role == "EMPLOYEE" %}selected{% endif %}>Employee</option>
                                                 </select>
                                             </div>
                                                                                     
@@ -88,7 +88,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Phone</label>
-                                                <input type="text" name="phone" class="form-control" placeholder="Enter phone" value="{{emp_id.user.phone}}">
+                                                <input type="text" name="phone" class="form-control" placeholder="Enter phone" value="{{emp.user.phone}}">
                                                 </div>
                                             </div>
                                         
@@ -96,7 +96,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Experience (Years)</label>
-                                                <input type="number" name="experience" class="form-control" value="{{emp_id.experience}}">
+                                                <input type="number" name="experience" class="form-control" value="{{emp.experience}}">
                                                 </div>
                                             </div>
 
@@ -104,7 +104,7 @@
                                              <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Profile Photo</label>
-                                                <input type="file" name="profile_pic" class="form-control" value="{{emp_id.profile_pic}}">
+                                                <input type="file" name="profile_pic" class="form-control" value="{{emp.profile_pic}}">
                                                 </div>
                                             </div>
 
@@ -112,7 +112,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                 <label>Address</label>
-                                                <textarea name="address" class="form-control" rows="2">{{emp_id.user.address}}</textarea>
+                                                <textarea name="address" class="form-control" rows="2">{{emp.user.address}}</textarea>
                                                 </div>
                                             </div>
                                         
@@ -126,7 +126,7 @@
                                                 {% for d in dep_id %}
 
                                                 <option value="{{ d.id }}"
-                                                {% if emp_id.department.id == d.id %}selected{% endif %}>
+                                                {% if emp.department.id == d.id %}selected{% endif %}>
                                                 {{ d.name }}
                                                 </option>
 
@@ -140,7 +140,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Designation</label>
-                                                <input type="text" name="designation" class="form-control" placeholder="Enter designation" value="{{emp_id.designation}}">
+                                                <input type="text" name="designation" class="form-control" placeholder="Enter designation" value="{{emp.designation}}">
                                                 </div>
                                             </div>
                                         
@@ -149,7 +149,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Salary</label>
-                                                <input type="number" name="salary" class="form-control" value="{{emp_id.salary}}">
+                                                <input type="number" name="salary" class="form-control" value="{{emp.salary}}">
                                                 </div>
                                             </div>
                                         
@@ -157,7 +157,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                 <label>Joining Date</label>
-                                                <input type="date" name="join_date" class="form-control" value="{{emp_id.join_date|date:'Y-m-d' }}">
+                                                <input type="date" name="join_date" class="form-control" value="{{emp.join_date|date:'Y-m-d' }}">
                                                 </div>
                                             </div>
                                                                                                                         

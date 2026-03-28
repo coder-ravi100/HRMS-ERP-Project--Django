@@ -283,11 +283,11 @@
 									<div class="row align-items-center">
 										<div class="col-md-12">
 											<div class="page-header-title">
-												<h5>Home</h5>
+												
 											</div>
 											<ul class="breadcrumb">
-												<li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-												<li class="breadcrumb-item"><a href="#!">Analytics Dashboard</a></li>
+												<li class="breadcrumb-item"><a href="#"><i class="feather icon-home"></i></a></li>
+												<li class="breadcrumb-item"><a href="#!">Overview</a></li>
 											</ul>
 											
 										</div>
@@ -306,7 +306,7 @@
 													<i class="fas fa-calendar-check text-c-green f-36"></i>
 												</div>
 												<div class="col text-right">
-													<h3>{{ present_days }}</h3>
+													<h3>{{ present_count }}</h3>
 													<h5 class="mb-0 text-muted">My Attendance</h5>
 												</div>
 											</div>
@@ -316,11 +316,11 @@
 											<div class="row text-center">
 												<div class="col-6">
 													<h6 class="text-muted">Present</h6>
-													<h5>{{ present_days }}</h5>
+													<h5>{{ present_count }}</h5>
 												</div>
 												<div class="col-6">
 													<h6 class="text-muted">Absent</h6>
-													<h5>{{ absent_days }}</h5>
+													<h5>{{ absent_count }}</h5>
 												</div>
 											</div>
 										</div>
@@ -335,7 +335,7 @@
 													<i class="fas fa-tasks text-c-blue f-36"></i>
 												</div>
 												<div class="col text-right">
-													<h3>{{ total_tasks }}</h3>
+													<h3>{{total_tasks}}</h3>
 													<h5 class="mb-0 text-muted">My Tasks</h5>
 												</div>
 											</div>
@@ -345,11 +345,11 @@
 											<div class="row text-center">
 												<div class="col-6">
 													<h6 class="text-muted">Completed</h6>
-													<h5>{{ completed_tasks }}</h5>
+													<h5>{{completed_tasks}}</h5>
 												</div>
 												<div class="col-6">
 													<h6 class="text-muted">Pending</h6>
-													<h5>{{ pending_tasks }}</h5>
+													<h5>{{pending_tasks}}</h5>
 												</div>
 											</div>
 										</div>
@@ -364,7 +364,7 @@
 													<i class="fas fa-plane text-c-red f-36"></i>
 												</div>
 												<div class="col text-right">
-													<h3>{{ total_leaves }}</h3>
+													<h3>{{total_leaves}}</h3>
 													<h5 class="mb-0 text-muted">My Leaves</h5>
 												</div>
 											</div>
@@ -374,11 +374,11 @@
 											<div class="row text-center">
 												<div class="col-6">
 													<h6 class="text-muted">Approved</h6>
-													<h5>{{ approved_leaves }}</h5>
+													<h5>{{approved_leaves}}</h5>
 												</div>
 												<div class="col-6">
 													<h6 class="text-muted">Pending</h6>
-													<h5>{{ pending_leaves }}</h5>
+													<h5>{{pending_leaves}}</h5>
 												</div>
 											</div>
 										</div>
@@ -415,26 +415,6 @@
 								
 							</div>
 
-							<div class="row">
-								<div class="col-xl-12">
-									<div class="card">
-										<div class="card-header">
-											<h5>Recent Activity</h5>
-										</div>
-										<div class="card-body">
-											<ul class="list-unstyled">
-												{% for act in activities %}
-												<li class="mb-2">
-													<i class="fas fa-circle text-primary"></i>
-													{{ act }}
-												</li>
-												{% endfor %}
-											</ul>
-										</div>
-									</div>
-								</div>
-								
-							</div>
 							<!-- [ Main Content ] end -->
 						</div>
 					</div>
@@ -457,11 +437,19 @@
 	
 
 	<script>
+		var attendance_data = JSON.parse('{{attendance_data|escapejs}}');
+		var task_data = JSON.parse('{{task_data|escapejs}}');
+
+		console.log(attendance_data);
+		console.log(task_data);
+	</script>
+
+	<script>
 		 // [ line-smooth-chart ] start
 		 if (document.getElementById('morris-line-smooth-chart')){
 		 	Morris.Line({
 			element: 'morris-line-smooth-chart',
-			data: attendanceData,
+			data: attendance_data,
 			xkey: 'y',
 			redraw: true,
 			resize: true,
@@ -481,7 +469,7 @@
 		 if (document.getElementById('morris-donut-chart')) {
         var graph = Morris.Donut({
             element: 'morris-donut-chart',
-            data: donutData,
+            data: task_data,
             colors: [
 			'#3949AB', 
 			'#2ca961',

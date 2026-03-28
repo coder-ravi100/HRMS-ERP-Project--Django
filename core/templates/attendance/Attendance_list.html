@@ -17,7 +17,7 @@
                                             <h5 class="m-b-10">Attendance</h5>
                                         </div>
                                         <ul class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="{% url 'admin-dashboard' %}"><i class="feather icon-home"></i></a></li>
                                             <li class="breadcrumb-item"><a href="#!">Attendance List</a></li>
                                         </ul>
                                     </div>
@@ -51,7 +51,7 @@
                                                     {% for att in attendance %}
                                                     <tr>
                                                         <td>{{forloop.counter}}</td>
-                                                        <td>{{att.employee.username}}</td>
+                                                        <td>{{att.employee.first_name}} {{att.employee.last_name}}</td>
                                                         <td>{{att.date}}</td>
                                                         <td>{{att.check_in |default:'--'|time:"H:i"}}</td>
                                                         <td>{{att.check_out|default:'--'|time:"H:i"}}</td>

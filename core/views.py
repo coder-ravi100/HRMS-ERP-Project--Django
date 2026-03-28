@@ -16,6 +16,7 @@ from django.utils.timezone import localtime,now
 from django.db.models  import Count
 from .utils import sendmailForOtp
 import json
+from django.core.paginator import Paginator
 
 # Create your views here.
 #---------------------------------------------------------
@@ -24,6 +25,8 @@ import json
 @never_cache
 @login_required
 def admin_dashboard(request):
+     if request.user.role != "ADMIN":
+        return redirect('employee-dashboard')
      today = date.today()
      week_ago = today - timedelta(days=7)
 
@@ -88,7 +91,73 @@ def admin_dashboard(request):
 def employee_dashboard(request):
     if request.user.role != "EMPLOYEE":
         return redirect('admin-dashboard')
-    return render(request,'dashboard/Employee_Dashboard.html')
+
+    employee = request.user
+    today = date.today()
+
+    # Attendance Chart 
+    attendance_data = []
+    for i in range(7):
+        day = today - timedelta(days=i)
+
+        count = Attendance.objects.filter(
+            employee=employee,
+            date=day,
+            status="Present"
+        ).count()
+
+        attendance_data.append({
+            "y": day.strftime("%a"),
+            "Present": count
+        })
+
+    attendance_data = attendance_data[::-1]  
+
+    # Task Data (Donut)
+    completed_tasks = Task.objects.filter(
+        assigned_to=employee, status="Completed"
+    ).count()
+
+    pending_tasks = Task.objects.filter(
+        assigned_to=employee, status="Pending"
+    ).count()
+
+    task_data = [
+        {'label': 'Completed', 'value': completed_tasks},
+        {'label': 'Pending', 'value': pending_tasks},
+    ]
+
+    # Cards
+    present_count = Attendance.objects.filter(employee=employee, status='Present').count()
+    absent_count = Attendance.objects.filter(employee=employee, status='Absent').count()
+
+ 
+    total_tasks = Task.objects.filter(assigned_to=employee).count()
+    completed_tasks = Task.objects.filter(assigned_to=employee, status='Completed').count()
+    pending_tasks = Task.objects.filter(assigned_to=employee, status='Pending').count()
+
+    total_leaves = Leave.objects.filter(employee=employee).count()
+    approved_leaves = Leave.objects.filter(employee=employee, status='Approved').count()
+    pending_leaves = Leave.objects.filter(employee=employee, status='Pending').count()
+
+    context = {
+        'present_count': present_count,
+        'absent_count': absent_count,
+
+        'total_tasks': total_tasks,
+        'completed_tasks': completed_tasks,
+        'pending_tasks': pending_tasks,
+
+        'total_leaves': total_leaves,
+        'approved_leaves': approved_leaves,
+        'pending_leaves': pending_leaves,
+
+       
+        'attendance_data': json.dumps(attendance_data),
+        'task_data': json.dumps(task_data),
+    }
+
+    return render(request, 'dashboard/Employee_Dashboard.html',context)
 
 
 #---------------------------------------------------------
@@ -99,28 +168,34 @@ def user_login(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        try:
-            user_obj = User.objects.get(email=email)
-        except User.DoesNotExist:
-            messages.error(request, "Invalid Credentials")
+        #empty validation
+        if not email or not password:
+            messages.error(request, "All fields are required")
             return redirect('user-login')
 
-        user = authenticate(request, username=user_obj.username, password=password)
-
-        if user is not None:
-            login(request, user)
-
+        try:
            
-            next_url = request.GET.get('next')
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            messages.error(request, "User not found")
+            return redirect('user-login')
 
-            if user.role == "ADMIN":
-                return redirect(next_url or 'admin-dashboard')
-            else:
-                return redirect(next_url or 'employee-dashboard')
+        #password check
+        if not user.check_password(password):
+            messages.error(request, "Wrong password")
+            return redirect('user-login')
 
+        
+        login(request, user)
+
+        next_url = request.GET.get('next')
+
+        if user.role == "ADMIN":
+            return redirect(next_url or 'admin-dashboard')
         else:
-            messages.error(request, "Invalid Credentials")
-    return render(request,'authentication/Login.html')
+            return redirect(next_url or 'employee-dashboard')
+
+    return render(request, 'authentication/Login.html')
 
 
 
@@ -238,17 +313,14 @@ def add_department(request):
     if request.method == "POST":
         dep_name = request.POST["name"]
         dep_description = request.POST["description"]
-        d_id = Department.objects.create(
+
+        Department.objects.create(
             name = dep_name,
-            description = dep_description,
+            description = dep_description
         )
-        if d_id:
-            d_all = Department.objects.all()
-            contaxt = {
-                'd_all' : d_all,
-            }
         
-        return render(request,'department/Department_list.html',contaxt)
+        messages.success(request, "Department Added Successfully")
+        return redirect('list_department')
     
     return render(request,'department/Department_add.html')
 
@@ -264,46 +336,36 @@ def list_department(request):
 
 #Edit Department Bussiness Logic Code
 def edit_department(request, pk):
-    if request.method == "POST":
+    try:
         d_id = Department.objects.get(id = pk)
+    except Department.DoesNotExist:
+        messages.error(request,"Department Not Found")
+    
+    if request.method == "POST":
         d_id.name = request.POST['name']
         d_id.description = request.POST['description']
-
         d_id.save()
-        d_all = Department.objects.all()
 
-        contaxt = {
-            'd_all' : d_all
-        }
-        return render(request,'department/Department_list.html',contaxt)
-    else:
-        d_id = Department.objects.get(id = pk)
-        contaxt = {
-            'd_id' : d_id
-        }
-        return render(request,'department/Department_edit.html',contaxt)
-
+        messages.success(request,"Department Updated Successfully")
+       
+        return redirect('list_department')
+    context = {
+        'd_id' : d_id
+    }
+    return render(request,'department/Department_edit.html',context)
 
 #Delete Department Bussiness Logic Code
 def delete_department(request,pk):
    try:
        d_id = Department.objects.get(id = pk)
        d_id.delete()
-
-       d_all = Department.objects.all()
-       contaxt = {
-           'd_all' : d_all
-       }
-       return render(request,'department/Department_list.html',contaxt)
-   except:
-       d_all = Department.objects.all()
-       contaxt = {
-           'd_all' : d_all
-       }
-       return render(request,'department/Department_list.html',contaxt)
+       messages.success(request,'Department  Depeted Successfully')
+    
+   except Department.DoesNotExist:
+       messages.error(request,'Department Not Found')
+    
+   return redirect('list_department')
    
-
-
 
 #---------------------------------------------------------
 #           ******EMPLOYEE SECTION******
@@ -311,11 +373,9 @@ def delete_department(request,pk):
 
 #Create Employee Bussiness Logic Code
 def add_employee(request):
-
     departments = Department.objects.all()
 
     if request.method == "POST":
-        # USER DATA
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
@@ -324,24 +384,11 @@ def add_employee(request):
         address = request.POST['address']
         profile_pic = request.FILES.get('profile_pic')
 
-        # USERNAME
         username = first_name.lower() + last_name.lower()
+        password = first_name[:2] + email[:3] + "123"
 
-        # RANDOM PASSWORD
-        l1 = ['34xx','35xx','36xx','37xx','38xx','39xx']
-        password = first_name[0:2] + email[0:3] + random.choice(l1)
-        print("PASSWORD:", password)
+        department = Department.objects.get(id=request.POST['department'])
 
-        # EMPLOYEE PROFILE DATA
-        dep_id = request.POST['department']
-        designation = request.POST['designation']
-        salary = request.POST['salary']
-        join_date = request.POST['join_date']
-        experience = request.POST['experience']
-
-        department = Department.objects.get(id=dep_id)
-
-        # CREATE USER
         user = User.objects.create_user(
             username=username,
             password=password,
@@ -354,85 +401,88 @@ def add_employee(request):
             profile_pic=profile_pic
         )
 
-        # CREATE EMPLOYEE PROFILE
         EmployeeProfile.objects.create(
             user=user,
             department=department,
-            designation=designation,
-            salary=salary,
-            join_date=join_date,
-            experience=experience
+            designation=request.POST['designation'],
+            salary=request.POST['salary'],
+            join_date=request.POST['join_date'],
+            experience=request.POST['experience']
         )
 
-        employees = EmployeeProfile.objects.all()
+        print("Employee Password:", password)
+        messages.success(request, "Employee added successfully")
+        return redirect('list-employee')
 
-        context = {
-            "employees": employees
-        }
-
-        return render(request,'employee/Employee_list.html',context)
+    #Paginator Logic Code  
+    employees = EmployeeProfile.objects.all()
+    paginator = Paginator(employees, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        "departments": departments
+        'departments': departments,
+        'page_obj': page_obj
     }
+    return render(request, 'employee/Employee_add.html', context)
 
-    return render(request,'employee/Employee_add.html',context)
-
-
-#Edit Employee Bussiness Logic  Code
+#List Employee Bussiness Logic  Code
 def list_employee(request):
-    employees = EmployeeProfile.objects.select_related('user','department')
+    # employees = EmployeeProfile.objects.select_related('user','department')
+    
+    #Paginator Logic Code  
+    employees = EmployeeProfile.objects.all().order_by('id')
+    paginator = Paginator(employees, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+        
     context = {
-        'employees' : employees
+        'employees' : employees,
+        'page_obj': page_obj
     }
+    
     return render(request,'employee/Employee_list.html',context)
 
 
 
 #Update Employee Bussiness Logic  Code
-def edit_employee(request,pk):
-    
-    emp_id = EmployeeProfile.objects.get(id=pk)
-    dep_id = Department.objects.all()
+def edit_employee(request, pk):
+    emp = EmployeeProfile.objects.get(id=pk)
+    departments = Department.objects.all()
 
     if request.method == "POST":
-        #USER UPDATE
-        emp_id.user.first_name = request.POST['first_name']
-        emp_id.user.last_name = request.POST['last_name']
-        emp_id.user.email = request.POST['email']
-        emp_id.user.phone = request.POST['phone']
-        emp_id.user.address = request.POST['address']
+        emp.user.first_name = request.POST['first_name']
+        emp.user.last_name = request.POST['last_name']
+        emp.user.email = request.POST['email']
+        emp.user.phone = request.POST['phone']
+        emp.user.address = request.POST['address']
 
         profile_pic = request.FILES.get('profile_pic')
         if profile_pic:
-            emp_id.user.profile_pic = profile_pic
-        emp_id.user.save()
+            emp.user.profile_pic = profile_pic
 
-        #EMPLOYEE PROFILE UPDATE
-        dep_id = request.POST['department']
-        emp_id.department = Department.objects.get(id=dep_id)
+        emp.user.save()
 
-        emp_id.designation = request.POST['designation']
-        emp_id.salary = request.POST['salary']
-        join_date = request.POST.get('join_date')
+        emp.department = Department.objects.get(id=request.POST['department'])
+        emp.designation = request.POST['designation']
+        emp.salary = request.POST['salary']
+        emp.experience = request.POST['experience']
 
-        if join_date:
-            emp_id.join_date = join_date        
+        if request.POST.get('join_date'):
+            emp.join_date = request.POST['join_date']
 
-        emp_id.experience = request.POST['experience']
+        emp.save()
 
-        emp_id.save()
+        messages.success(request, "Employee updated successfully")
+        return redirect('list-employee')
 
-        employees = EmployeeProfile.objects.all()
-        context = {
-            'employees' : employees
-        }
-        return render(request,'employee/Employee_list.html',context)
     context = {
-        'emp_id' : emp_id,
-        'dep_id' : dep_id
+        'emp' : emp,
+        'dep_id' : departments
     }
-    return render(request,'employee/Employee_edit.html',context)
+    return render(request, 'employee/Employee_edit.html',context)
+
 
 #Show Employee Bussiness Logic code
 def show_employee(request,pk):
@@ -451,8 +501,8 @@ def delete_employee(request,pk):
     emp = EmployeeProfile.objects.get(id = pk)
     emp.user.delete()
 
+    messages.success(request,"Employee Deleted Successfully")
     employees = EmployeeProfile.objects.all()
-
     context = {
         "employees" : employees
     }
@@ -485,6 +535,7 @@ def add_task(request):
             due_date = due_date,
             status = status
         )
+        messages.success(request,"Task Added Successfully")
         return redirect('list-task')
     context = {
         'employees' : employees
@@ -518,16 +569,10 @@ def task_edit(request,pk):
         tasks.status = request.POST['status']
 
         tasks.save()
+        
+        messages.success(request,"Task Updated Successfully")
+        return redirect('list-task')
     
-        tasks = Task.objects.all()
-        
-        context = {
-            'tasks' : tasks,
-            'employees' : employees
-        }
-        
-        return render(request,'tasks/Task_list.html',context)
-        
     context = {
         'tasks' : tasks,
         'employees' : employees
@@ -541,12 +586,8 @@ def task_delete(request,pk):
     tasks = Task.objects.get(id=pk)
     tasks.delete()
 
-    tasks = Task.objects.all()
-
-    context = {
-        'tasks' : tasks
-    }
-    return render(request,'tasks/Task_list.html',context)
+    messages.error(request,"Task  Deleted Successfully")
+    return redirect('list-task')
 
 
 
@@ -566,6 +607,8 @@ def update_task_status(request,pk):
 
     task.status = 'Completed'
     task.save()
+    
+    messages.success(request,"Task Marked As Completed")
     return redirect('my-task')
 
 
@@ -585,6 +628,7 @@ def apply_leave(request):
             reason=request.POST.get("reason"),
             status="Pending"
         )
+        messages.success(request,"Leave Applied Successfully")
         return redirect('my-leave')
 
     return render(request, 'leave/Leave_apply.html')
@@ -625,6 +669,10 @@ def update_leave_status(request,pk):
         if status in ["Pending","Approved", "Rejected"]:
             leave.status = status
             leave.save()
+            
+            messages.success(request,f"Leave {status.lower()} Successfully")
+        else:
+            messages.error(request,"Invalid Status")
 
     return redirect('leave-list')
 
@@ -769,6 +817,7 @@ def admin_profile(request):
             user.profile_pic = request.FILES.get('profile_pic')
 
         user.save()
+        messages.success(request,"Profile Added Successfully")
         return redirect('admin-profile')
     context = {
         'user' : user
@@ -825,6 +874,7 @@ def employee_profile(request):
     user = request.user
 
     if user.role != "EMPLOYEE":
+        messages.success(request,"Profile Added Successfully")
         return redirect('admin-dashboard')
     
     profile = EmployeeProfile.objects.filter(user=user).first()

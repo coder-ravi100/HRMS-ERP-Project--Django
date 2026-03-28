@@ -130,6 +130,7 @@ class Leave(models.Model):
         choices=STATUS,
         default="Pending"
     )
+   
 
     def __str__(self):
         return self.employee.username
