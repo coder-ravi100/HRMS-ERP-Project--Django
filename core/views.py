@@ -12,7 +12,7 @@ from datetime  import timedelta,date
 import random
 
 from .utils import *
-from django.utils.timezone import localtime,now
+from django.utils.timezone import localtime
 from django.db.models  import Count
 from .utils import sendmailForOtp
 import json
@@ -188,12 +188,20 @@ def user_login(request):
         
         login(request, user)
 
+        if user.role == "ADMIN":
+            messages.success(request, f"Admin {user.first_name} logged in")
+
+        else:
+            messages.info(request, f"Employee {user.username} logged in")
+
         next_url = request.GET.get('next')
 
         if user.role == "ADMIN":
             return redirect(next_url or 'admin-dashboard')
         else:
             return redirect(next_url or 'employee-dashboard')
+        
+        
 
     return render(request, 'authentication/Login.html')
 
@@ -359,7 +367,7 @@ def delete_department(request,pk):
    try:
        d_id = Department.objects.get(id = pk)
        d_id.delete()
-       messages.success(request,'Department  Depeted Successfully')
+       messages.error(request,'Department Depeted Successfully')
     
    except Department.DoesNotExist:
        messages.error(request,'Department Not Found')
@@ -497,17 +505,15 @@ def show_employee(request,pk):
 
 
 #Delete Employee Bussiness Logic  Code
-def delete_employee(request,pk):
-    emp = EmployeeProfile.objects.get(id = pk)
-    emp.user.delete()
+def delete_employee(request, pk):
+    try:
+        emp = EmployeeProfile.objects.get(id=pk)
+        emp.user.delete()
+        messages.error(request, "Employee Deleted Successfully")
+    except EmployeeProfile.DoesNotExist:
+        messages.error(request, "Employee not found")
 
-    messages.success(request,"Employee Deleted Successfully")
-    employees = EmployeeProfile.objects.all()
-    context = {
-        "employees" : employees
-    }
-    return render(request,'employee/Employee_list.html',context)
-
+    return redirect('list-employee') 
 
 
 #---------------------------------------------------------
@@ -546,7 +552,7 @@ def add_task(request):
 
 #List Task Bussiness Logic  Code
 def list_task(request):
-    tasks = Task.objects.select_related("assigned_to", "assigned_by").order_by('-id')
+    tasks = Task.objects.select_related("assigned_to", "assigned_by").order_by('id')
     
     context = {
         'tasks' : tasks
@@ -586,7 +592,7 @@ def task_delete(request,pk):
     tasks = Task.objects.get(id=pk)
     tasks.delete()
 
-    messages.error(request,"Task  Deleted Successfully")
+    messages.error(request,"Task Deleted Successfully")
     return redirect('list-task')
 
 

@@ -48,25 +48,102 @@
 	</div>
 	<!-- [ Pre-loader ] End -->
 	<!--[ Alter Message ] Start -->
-	{% if messages %}
-	<div style="position: fixed; top: 20px; right: 20px; z-index: 9999; width: 300px;">
-    {% for message in messages %}
-        <div class="alert 
-            {% if message.tags == 'success' %}alert-success
-            {% elif message.tags == 'error' %}alert-danger
-            {% elif message.tags == 'warning' %}alert-warning
-            {% else %}alert-info
-            {% endif %}
-            alert-dismissible fade show" role="alert">
+	<style>
+				.toast-container {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			z-index: 9999;
+		}
 
-            {{ message }}
+		.toast {
+			min-width: 280px;
+			margin-bottom: 15px;
+			padding: 15px 20px;
+			border-radius: 10px;
+			color: #fff;
+			font-size: 14px;
+			box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+			position: relative;
+			overflow: hidden;
 
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-        </div>
-    {% endfor %}
+			/* 👇 timing fix */
+			animation: slideIn 0.5s ease forwards,
+					stay 4s ease 0.5s forwards,
+					fadeOut 0.5s ease 4.5s forwards;
+		}
+
+		/* content */
+		.toast-content {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		/* progress bar */
+		.toast-progress {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			height: 3px;
+			width: 100%;
+			background: rgba(255,255,255,0.7);
+			animation: progress 4.5s linear forwards;
+		}
+
+		/* colors */
+		.toast-success { background: linear-gradient(135deg, #00c851, #007e33); }
+		.toast-error { background: linear-gradient(135deg, #ff4444, #cc0000); }
+		.toast-warning { background: linear-gradient(135deg, #ffbb33, #ff8800); }
+		.toast-info { background: linear-gradient(135deg, #33b5e5, #0099cc); }
+
+		/* animations */
+		@keyframes slideIn {
+			from { transform: translateX(120%); opacity: 0; }
+			to { transform: translateX(0); opacity: 1; }
+		}
+
+		@keyframes stay {
+			from { opacity: 1; }
+			to { opacity: 1; }
+		}
+
+		@keyframes fadeOut {
+			to { opacity: 0; transform: translateX(120%); }
+		}
+
+		@keyframes progress {
+			from { width: 100%; }
+			to { width: 0%; }
+		}	
+	</style>
+	<div class="toast-container">
+		{% if messages %}
+			{% for message in messages %}
+				<div class="toast 
+					{% if message.tags == 'success' %}toast-success
+					{% elif message.tags == 'error' %}toast-error
+					{% elif message.tags == 'warning' %}toast-warning
+					{% else %}toast-info
+					{% endif %}
+				">
+					<div class="toast-content">
+						<span class="toast-icon">
+							{% if message.tags == 'success' %}✔
+							{% elif message.tags == 'error' %}✖
+							{% elif message.tags == 'warning' %}⚠
+							{% else %}ℹ
+							{% endif %}
+						</span>
+						<span>{{ message }}</span>
+					</div>
+					<div class="toast-progress"></div>
+				</div>
+			{% endfor %}
+		{% endif %}
 	</div>
-	{% endif %}
 	<!--[ Alter Message ] End-->
+
 	<!-- [ navigation menu ] start -->
 	<nav class="pcoded-navbar menupos-fixed menu-light brand-red ">
 		<div class="navbar-wrapper ">
@@ -164,85 +241,7 @@
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
-				<li>
-					<div class="dropdown">
-						<a class="dropdown-toggle" href="#" data-toggle="dropdown"><i class="icon feather icon-bell"></i></a>
-						<div class="dropdown-menu dropdown-menu-right notification">
-							<div class="noti-head">
-								<h6 class="d-inline-block m-b-0">Notifications</h6>
-								<div class="float-right">
-									<a href="#!" class="m-r-10">mark as read</a>
-									<a href="#!">clear all</a>
-								</div>
-							</div>
-							<ul class="noti-body">
-								<li class="n-title">
-									<p class="m-b-0">NEW</p>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-1.' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>John Doe</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>5 min</span></p>
-											<p>New ticket Added</p>
-										</div>
-									</div>
-								</li>
-								<li class="n-title">
-									<p class="m-b-0">EARLIER</p>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>Joseph William</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>10 min</span></p>
-											<p>Prchace New Theme and make payment</p>
-										</div>
-									</div>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>Sara Soudein</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>12 min</span></p>
-											<p>currently login</p>
-										</div>
-									</div>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>Joseph William</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>30 min</span></p>
-											<p>Prchace New Theme and make payment</p>
-										</div>
-									</div>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>Sara Soudein</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>1 hour</span></p>
-											<p>currently login</p>
-										</div>
-									</div>
-								</li>
-								<li class="notification">
-									<div class="media">
-										<img class="img-radius" src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="Generic placeholder image">
-										<div class="media-body">
-											<p><strong>Joseph William</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>2 hour</span></p>
-											<p>Prchace New Theme and make payment</p>
-										</div>
-									</div>
-								</li>
-							</ul>
-							<div class="noti-footer">
-								<a href="#!">show all</a>
-							</div>
-						</div>
-					</div>
-				</li>
+				
 				<li>
 					<div class="dropdown drp-user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -251,16 +250,14 @@
 						<div class="dropdown-menu dropdown-menu-right profile-notification">
 							<div class="pro-head">
 								<img src="{% static 'assets/images/user/avatar-1.jpg' %}" class="img-radius" alt="User-Profile-Image">
-								<span>John Doe</span>
-								<a href="auth-signin.html" class="dud-logout" title="Logout">
-									<i class="feather icon-log-out"></i>
-								</a>
+								<span>{{user.first_name}} {{user.last_name}}</span>
+								
 							</div>
 							<ul class="pro-body">
-								<li><a href="#!" class="dropdown-item"><i class="feather icon-settings"></i> Settings</a></li>
-								<li><a href="#!" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
-								<li><a href="message.html" class="dropdown-item"><i class="feather icon-mail"></i> My Messages</a></li>
-								<li><a href="auth-signin.html" class="dropdown-item"><i class="feather icon-lock"></i> Lock Screen</a></li>
+								
+								
+								<li><a href="{% url 'employee-profile' %}" class="dropdown-item"><i class="feather icon-mail"></i> Profile</a></li>
+								
 							</ul>
 						</div>
 					</div>
