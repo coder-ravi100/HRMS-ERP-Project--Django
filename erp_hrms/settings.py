@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-o4j($t=!t7c0@(pzc=313gp8p7x&kogi)y_w*o8nb8)-ruvc9q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['hrms-erp-project-django-2.onrender.com']
 
 
 # Application definition
