@@ -1,0 +1,128 @@
+🎯Database Tables And Models Explaination
+⭕1.USER MODELS
+-------------
+✅ 1.Purpose
+"User Model Authentication Ke Liye Use Hota Hai---Login, Password Management Aur System Access Control Handle Karta Hai"
+
+✅ 2.Fields
+🔹Role           ➡️ User Ka Type Define Karta Hai (Admin/Employee)
+🔹Phone          ➡️ Contact Info
+🔹Address        ➡️ additional User detail
+🔹Email          ➡️ Unique Login Identifier (Username ke alternative ke liye bhi use ho Sakta hai)
+🔹Is_active      ➡️ User Account enable / disable Control
+🔹Profile_pic    ➡️ User Ka Profile Image Store Karne Ke Liye
+🔹otp            ➡️ temporary verification code (Login/Reset Ke Liye)
+🔹otp_created_at ➡️ OTP Expiry Track Karne Ke Liye
+🔹otp_attempts   ➡️ Security Purpose
+
+✅ 3.Relation
+"User Model Base Entity Hai Aur Dusare Models Jaise EmployeeProfile, Task, Attendance isko ForeignKey Yah OneToOne se Reference Karte Hai"
+
+✅ 4.Problem + Improvement
+🔹OTP DB Mein Store Karna Insecure hai
+🔹Phone Unique Nahi hai (Dupalicate Ho Sakta Hai)
+
+✅ 5.Improvements:
+🔹OTP ko Redis/cache mein store karna chahiye
+🔹role ko separate model ya Django Groups se manage karna chahiye
+🔹phone field pe unique=True lag sakta hai
+
+
+
+⭕2.DEPARTMENT MODELS
+----------------------
+
+✅ 1. Purpose
+    “Department model ka use organization ke andar employees ko logical groups mein divide karne ke liye hota hai, jaise HR, IT, Finance”
+
+✅ 2. Fields
+name → department identify karne ke liye (jaise HR, IT)
+description → optional detail, jaise department ka role ya responsibility
+
+✅ 3.Relation
+“Department ka relation EmployeeProfile ke saath ForeignKey hai, 
+jiska matlab ek department mein multiple employees ho sakte hai (OneToMany relationship)”
+
+✅ 4.Improvement
+name = models.CharField(unique=True)
+optional: parent department add karke hierarchy bana sakte hai
+
+
+
+⭕4.EmployeeProfile
+--------------------
+✅ 1. Purpose
+
+“EmployeeProfile model ka use User model ko extend karne ke liye kiya gaya hai jisme employee-specific details store hoti hai, 
+jaise department, salary, designation”
+
+
+✅ 2. Fields
+user → OneToOne relation, har employee ka ek hi user account hota hai
+department → employee kis department mein kaam karta hai
+designation → employee ka role (e.g. Developer, Manager)
+salary → employee ka compensation store karne ke liye
+join_date → employee kab join hua
+experience → years of experience (but yeh problematic hai)
+
+✅ 3. Relation (VERY IMPORTANT)
+
+👉 Yeh line confidently bol:
+
+“User aur EmployeeProfile ke beech OneToOne relationship use kiya hai kyunki har user ka sirf ek employee profile hona chahiye,
+ aur isse authentication data aur business data separate rehta hai”
+
+
+❌ 4. Problems
+experience store karna galat hai
+👉 yeh derived field hai (join_date se calculate ho sakta hai)
+salary sensitive data hai
+👉 directly accessible nahi hona chahiye (permission layer chahiye)
+department nullable hai
+👉 employee bina department ke exist kar sakta hai (real system mein rarely allowed)
+
+
+✅ 5. Improvements
+experience hata ke dynamically calculate karo
+salary ke liye access control ya separate table
+department ko required bana sakte hai (business rule pe depend)
+
+
+💣 Killer Line 
+
+“EmployeeProfile ko separate rakha taaki User model clean rahe aur employee-related business logic alag manage ho sake”
+
+⚡ Extra 
+
+👉 Question: “FK kyu nahi use kiya instead of OneToOne?”
+
+👉 Answer:
+
+“FK use karte to ek user ke multiple profiles ban sakte the, jo logically incorrect hai, isliye OneToOne use kiya”
+
+
+
+⭕4.TASKS MODELS
+--------------
+✅ 1. Purpose
+
+“Task model ka use employees ko work assign karne ke liye hota hai”
+
+✅ 2.Fields
+🔹Title ➡️ Task Identify Karne Ke Liye
+🔹Discription ➡️ Details
+🔹Due_date ➡️ Deadline
+🔹Status ➡️ Progress Track Karne Ke Liye
+
+
+✅ 3.Relations
+🔹Assigned_to → FK To User
+  ➡️ Ek User Ke Multiple Tasks Ho Sakte Hai  (OneToMany)
+
+🔹assigned_by → FK To User
+  ➡️ Kisne Assigned Kiya Track Karne Ke Liye
+
+
+✅ 4. Problem + Improvement
+🔹Problem → Koi Bhi User Assign Ho Sakta Hai (admin bhi)
+🔹improvement → EmployeeProfile Fk User Karna Chahiye 
