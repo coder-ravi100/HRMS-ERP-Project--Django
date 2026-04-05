@@ -65,7 +65,7 @@
     position: relative;
     overflow: hidden;
 
-    /* 👇 timing fix */
+    /*timing fix */
     animation: slideIn 0.5s ease forwards,
                stay 4s ease 0.5s forwards,
                fadeOut 0.5s ease 4.5s forwards;
@@ -145,7 +145,7 @@
 	<nav class="pcoded-navbar menupos-fixed menu-light brand-blue ">
 		<div class="navbar-wrapper ">
 			<div class="navbar-brand header-logo">
-				<a href="index.html" class="b-brand">
+				<a href="{% url 'admin-dashboard' %}" class="b-brand">
 					<img src="{% static 'assets/images/logo.svg' %}" alt="" class="logo images">
 					<img src="{% static 'assets/images/logo-icon.svg' %}" alt="" class="logo-thumb images">
 				</a>
@@ -235,7 +235,7 @@
 	<header class="navbar pcoded-header navbar-expand-lg navbar-light headerpos-fixed">
 		<div class="m-header">
 			<a class="mobile-menu" id="mobile-collapse1" href="#!"><span></span></a>
-			<a href="index.html" class="b-brand">
+			<a href="{% url 'admin-dashboard' %}" class="b-brand">
 				<img src="{% static 'assets/images/logo.svg' %}" alt="" class="logo images">
 				<img src="{% static 'assets/images/logo-icon.svg' %}" alt="" class="logo-thumb images">
 			</a>
