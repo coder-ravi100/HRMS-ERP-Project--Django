@@ -11,7 +11,7 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
-    phone = models.CharField(max_length=15, blank=True)
+    phone = models.CharField(max_length=15, blank=True, unique=True)
 
     address = models.TextField(blank=True)
 
@@ -54,7 +54,6 @@ class EmployeeProfile(models.Model):
     )
 
     designation = models.CharField(max_length=100)
-
 
     salary = models.DecimalField(max_digits=10, decimal_places=2)
 

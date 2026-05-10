@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login ,logout
+from django.contrib.auth import login ,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
@@ -164,7 +164,9 @@ def employee_dashboard(request):
 #           ******LOGIN SECTION******
 #---------------------------------------------------------
 def user_login(request):
+    #Request method check
     if request.method == "POST":
+        #Form data lena
         email = request.POST.get('email')
         password = request.POST.get('password')
 
@@ -174,7 +176,7 @@ def user_login(request):
             return redirect('user-login')
 
         try:
-           
+           #User fetch
             user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
             messages.error(request, "User not found")
@@ -263,9 +265,9 @@ def reset_password(request):
         return redirect('forgot-password')
 
     if request.method == "POST":
-        otp = request.POST.get('otp')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+        otp = request.POST['otp']  
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
 
         try:
             user = User.objects.get(email=email)
@@ -435,7 +437,7 @@ def list_employee(request):
     #Paginator Logic Code  
     employees = EmployeeProfile.objects.all().order_by('id')
     paginator = Paginator(employees, 5)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get('page') 
     page_obj = paginator.get_page(page_number)
 
         
@@ -547,9 +549,16 @@ def add_task(request):
 #List Task Bussiness Logic  Code
 def list_task(request):
     tasks = Task.objects.select_related("assigned_to", "assigned_by").order_by('id')
-    
+
+    #paginator Logic
+    paginator = Paginator(tasks, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    print("PAGE :",page_number)    
     context = {
-        'tasks' : tasks
+        # 'tasks' : tasks,
+        'tasks': page_obj
     }
     return render(request,'tasks/task_list.html',context)
 
@@ -741,9 +750,18 @@ def my_attendance(request):
 def list_attendance(request):
     if request.user.role != "ADMIN":
         return redirect('admin-dashboard')
-    attendance = Attendance.objects.all().order_by('-date')
+    attendance = Attendance.objects.all().order_by('date')
+    #Paginator Logic Code  
+    paginator = Paginator(attendance, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    print("PAGE :",page_number)
     context =  {
-        'attendance' : attendance
+       
+    #    'attendance' : attendance,
+    #     'page_obj': page_obj
+        'attendance' : page_obj
     }
     return render(request, 'attendance/Attendance_list.html',context)
 

@@ -1,0 +1,120 @@
+#MODELS EXPLAINATION
+Yeh Basically Ek Employee Management System Hai Jisme
+▪️ User ➡️ Base Entity Hai
+▪️ EmployeeProfile ➡️ Extra Details
+▪️ Department ➡️ Grouping
+▪️ Task / Leave / Attendace ➡️ Activity Tracking
+
+🔥 1. One-to-One Relationship (1:1)
+📍 Code: user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+💡 Meaning:
+➡️  Ek User Sirf Ek EmployeeProfile
+➡️  Ek EmployeeProfile Ka Sirf Ek User
+
+🧠 Real Understanding:
+Har employee ke paas ek account (User)
+Aur us account ka ek hi profile
+
+👉 Duplicate profile allowed nahi ❌
+👉 “User and EmployeeProfile have One-to-One relationship because each user has exactly one profile.”
+
+🔥 2. One-to-Many Relationship (1:N)
+
+✅ (A) Department → EmployeeProfile
+📍 Code: department = models.ForeignKey(Department, ...)
+
+💡 Meaning:
+
+👉 Ek Department → multiple employees
+👉 Ek Employee → ek hi department
+
+🧠 Real Example:
+IT Department → 10 employees
+HR Department → 5 employees
+
+👉 “One department can have many employees, but each employee belongs to only one department.”
+
+✅ (B) User → Task
+📍 Code:
+        assigned_to = models.ForeignKey(User, related_name="tasks")
+        assigned_by = models.ForeignKey(User, related_name="created_tasks")
+
+
+💡 Meaning:
+
+👉 Ek user → multiple tasks assign ho sakte
+👉 Ek user → multiple tasks create kar sakta
+
+🧠 Real Example:
+Manager → 20 tasks assign kare
+Employee → 5 tasks assigned
+
+| Field       | Meaning          |
+| ----------- | ---------------- |
+| assigned_to | Task kis ko diya |
+| assigned_by | Task kisne diya  |
+
+👉 Isko bolte hai self-referencing ForeignKey
+
+👉 “User has a one-to-many relationship with Task for both assignment and creation 
+    using self-referencing foreign keys.”
+
+✅ (C) User → Leave
+employee = models.ForeignKey(User)
+
+👉 Ek user → multiple leave apply kar sakta
+
+✅ (D) User → Attendance
+employee = models.ForeignKey(User)
+
+👉 Ek user → daily attendance (multiple records)
+
+🔥 3. Many-to-Many Relationship (M:N)
+
+❌ Tere current project mein direct ManyToManyField nahi hai
+
+💡 BUT Important 🔥 (Interview Trick)
+
+Agar tu bole:
+
+👉 “User ↔ Task many-to-many hai?”
+
+Answer:
+❌ Nahi
+
+👉 Kyunki:
+
+Ek task → sirf ek assigned_to
+Isliye yeh One-to-Many hai
+💡 Agar future mein banana ho:
+
+Example:
+
+assigned_to = models.ManyToManyField(User)
+
+👉 Tab:
+
+Ek task → multiple users
+Ek user → multiple tasks
+
+🧠 unique_together in Attendance
+unique_together = ['employee', 'date']
+
+💡 Meaning:
+
+👉 Ek user ka ek din mein sirf 1 attendance record
+
+👉 “This ensures that an employee cannot have duplicate attendance records for the same date.”
+
+
+💣 Full Ready OTP And Email Answer (Practice This 🔥)
+
+
+“Sir, maine OTP-based password reset system banaya hai jisme user email enter karta hai aur system OTP generate karke email par send karta hai.
+Pehle system email verify karta hai, fir 6-digit OTP generate karke database mein timestamp aur attempt count ke saath store karta hai.
+Maine 60 seconds ka cooldown bhi add kiya hai taaki multiple requests na aaye.
+OTP ko reusable email function ke through HTML template ke saath send kiya jata hai.
+Verification ke time OTP expiry (5 minutes), attempt limit aur OTP match check hota hai.
+Agar valid ho to password securely update hota hai.
+Overall maine system ko secure banane ke liye expiry, cooldown aur attempt limiting implement ki hai.”

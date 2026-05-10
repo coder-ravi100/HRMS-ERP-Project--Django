@@ -50,7 +50,7 @@
                                                 <tbody>
                                                     {% for att in attendance %}
                                                     <tr>
-                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{att.id}}</td>
                                                         <td>{{att.employee.first_name}} {{att.employee.last_name}}</td>
                                                         <td>{{att.date}}</td>
                                                         <td>{{att.check_in |default:'--'|time:"H:i"}}</td>
@@ -83,6 +83,40 @@
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination justify-content-end">
+                                            
+                                                    <!-- Previous -->
+                                                    {% if attendance.has_previous %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" href="#">Previous</a>
+                                                        </li>
+                                                    {% endif %}
+                                            
+                                                    <!-- Page Numbers -->
+                                                    {% for num in attendance.paginator.page_range %}
+                                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                            
+                                                    <!-- Next -->
+                                                    {% if attendance.has_next %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="page-item disabled">
+                                                            <a class="page-link" href="#">Next</a>
+                                                        </li>
+                                                    {% endif %}
+                                            
+                                                </ul>
+                                            </nav>
                                         </div>
                                     </div>
                                 </div>

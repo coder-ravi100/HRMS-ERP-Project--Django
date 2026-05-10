@@ -126,3 +126,32 @@ department ko required bana sakte hai (business rule pe depend)
 ✅ 4. Problem + Improvement
 🔹Problem → Koi Bhi User Assign Ho Sakta Hai (admin bhi)
 🔹improvement → EmployeeProfile Fk User Karna Chahiye 
+
+
+
+                                                ER Diagram
+                                                
+                                              ┌────────────┐
+                                              │    User    │
+                                              └────┬───────┘
+                                                   │ (1:1)
+                                                   │
+                                            ┌──────▼────────┐
+                                            │EmployeeProfile│
+                                            └──────┬────────┘
+                                                   │ (M:1)
+                                                   │
+                                            ┌──────▼────────┐
+                                            │  Department   │
+                                            └───────────────┘
+
+
+                                    User (1) ────────────< Task >──────────── (1) User
+                                      │                    ↑                      │
+                                      │                    │                      │
+                                      │ (1:M)              │                      │ (1:M)
+                                      ▼                    │                      ▼
+                                    Leave                assigned_to        assigned_by
+
+
+                                    User (1:M) ──────── Attendance
